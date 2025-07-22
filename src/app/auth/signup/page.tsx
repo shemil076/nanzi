@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import SignUp from './components/signup';
+import SignUp from '../components/signup';
 
 const AuthPage = () => {
   const searchParams = useSearchParams();

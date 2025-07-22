@@ -91,14 +91,14 @@ const RegisterCard = ({ isTenant }: { isTenant: boolean }) => {
           <Button
             className="w-full"
             variant={'outline'}
-            onClick={() => router.push('/auth/?isTenant=true')}
+            onClick={() => router.push('/auth/signup/?isTenant=true')}
           >
             Start as Tenant
           </Button>
         ) : (
           <Button
             className="w-full"
-            onClick={() => router.push('/auth/?isTenant=false')}
+            onClick={() => router.push('/auth/signup/?isTenant=false')}
           >
             Start as Landlord
           </Button>
