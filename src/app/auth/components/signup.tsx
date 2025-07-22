@@ -62,7 +62,7 @@ const SignUp = ({ isTenant }: { isTenant: boolean }) => {
       await register(newUser);
 
       if (user) {
-        router.push('/home');
+        router.push('/dashboard');
       }
     }
   };

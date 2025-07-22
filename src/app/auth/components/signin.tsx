@@ -52,7 +52,7 @@ const SignInForm = () => {
       await login(loginDetails);
 
       if (user) {
-        router.push('/home');
+        router.push('/dashboard');
       }
     }
   };
