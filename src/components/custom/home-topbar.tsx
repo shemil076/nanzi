@@ -1,4 +1,4 @@
-import { Button } from "../ui/button";
+import { Button } from '../ui/button';
 
 const HomeTopBar = () => {
   return (
@@ -11,6 +11,5 @@ const HomeTopBar = () => {
     </div>
   );
 };
-
 
 export default HomeTopBar;
