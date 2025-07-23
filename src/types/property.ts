@@ -1,3 +1,5 @@
+import { Building2, House, LucideIcon, MapPin, Store } from 'lucide-react';
+
 export enum PropertyType {
   HOUSE = 'HOUSE',
   APARTMENT = 'APARTMENT',
@@ -14,7 +16,14 @@ export const PropertyLabels: Record<PropertyType, string> = {
   [PropertyType.HOUSE]: 'House',
   [PropertyType.APARTMENT]: 'Apartment',
   [PropertyType.COMMERCIAL]: 'Commercial Space',
-  [PropertyType.LAND]: 'Land',
+  [PropertyType.LAND]: 'LandPlot',
+};
+
+export const PropertyIcon: Record<PropertyType, LucideIcon> = {
+  [PropertyType.HOUSE]: House,
+  [PropertyType.APARTMENT]: Building2,
+  [PropertyType.COMMERCIAL]: Store,
+  [PropertyType.LAND]: MapPin,
 };
 
 export const LandSizeUnitLabels: Record<LandSizeUnit, string> = {

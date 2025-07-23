@@ -44,7 +44,7 @@ export const login = createAsyncThunk(
 );
 
 export const refreshToken = createAsyncThunk(
-  'auth/refresh',
+  '/api/auth/refresh',
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.post<{ accessToken: string }>(
@@ -58,7 +58,7 @@ export const refreshToken = createAsyncThunk(
 );
 
 export const logout = createAsyncThunk(
-  'auth/logout',
+  '/api/auth/logout',
   async (_, { rejectWithValue }) => {
     try {
       await axios.post('/api/auth/logout');

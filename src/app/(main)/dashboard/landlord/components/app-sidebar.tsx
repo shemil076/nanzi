@@ -47,7 +47,7 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="border-none">
       <SidebarHeader className="h-12 bg-[#20274A] text-white">
         <SidebarMenu className="w-full h-full flex justify-center my-5">
           <SidebarMenuItem className="flex items-center gap-3">
@@ -56,7 +56,9 @@ export function AppSidebar() {
               asChild
             >
               <div>
-                <span className="museo-font text-4xl">nanzi </span>
+                <div className="museo-font text-4xl">
+                  <span className="text-blue-500 font-bold">n</span>anzi
+                </div>
                 <span className="text-base self-start">#landlord</span>
               </div>
             </SidebarMenuButton>

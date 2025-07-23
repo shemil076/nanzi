@@ -19,3 +19,22 @@ export const createProperty = async (
       throw err;
     });
 };
+
+export const fetchProperties = async (
+  accessToken: string,
+): Promise<Property[]> => {
+  return axios
+    .get('/api/property/', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      return res.data.map((item) => {
+        return reformatProperty(item);
+      });
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
