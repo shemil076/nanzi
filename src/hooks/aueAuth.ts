@@ -7,7 +7,7 @@ import { login, logout, refreshToken, register } from '@/redux/authSlice';
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { user, isAuthenticated, loading, error } = useSelector(
+  const { user, isAuthenticated, loading, error, accessToken } = useSelector(
     (state: RootState) => state.auth,
   );
 
@@ -32,6 +32,7 @@ export const useAuth = () => {
     isAuthenticated,
     loading,
     error,
+    accessToken,
     login: handleLogin,
     register: handleRegister,
     logout: handleLogout,
