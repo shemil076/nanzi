@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '../../../../../components/ui/sidebar';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 // Menu items.
 const items = [
@@ -44,39 +44,54 @@ const items = [
 
 export function AppSidebar() {
   const router = useRouter();
+  const pathname = usePathname();
+
   return (
-    <Sidebar className="border-l" collapsible="icon">
-      <SidebarHeader className="h-12 bg-white border-b">
-        <SidebarMenu className="w-full h-full flex justify-center">
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="h-12 bg-[#20274A] text-white">
+        <SidebarMenu className="w-full h-full flex justify-center my-5">
           <SidebarMenuItem className="flex items-center gap-3">
-            <SidebarMenuButton className="hover:bg-transparent" asChild>
-              <div className="items-center ">
+            <SidebarMenuButton
+              className="hover:bg-transparent hover:text-white"
+              asChild
+            >
+              <div>
                 <span className="museo-font text-4xl">nanzi </span>
-                <span className="text-base">landlord</span>
+                <span className="text-base self-start">#landlord</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent className="bg-white flex-1 flex flex-col">
-        <SidebarGroup>
+      <SidebarContent className="bg-gradient-to-b from-[#20274A] via-[#111111] to-[#111111] via-[33%] h-screen w-full flex-1 flex flex-col text-white">
+        <SidebarGroup className="my-10">
           <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <span
-                      onClick={() => {
-                        router.push(item.url);
-                      }}
+            <SidebarMenu className="gap-5">
+              {items.map((item) => {
+                const isActive = pathname === item.url;
+
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      className={`${
+                        isActive
+                          ? 'bg-white text-black '
+                          : 'hover:bg-white/10 text-gray-400'
+                      } flex gap-2 items-center px-3 py-2 rounded-md transition-colors duration-200 `}
                     >
-                      <item.icon size={16} />
-                      <span>{item.title}</span>
-                    </span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+                      <span
+                        onClick={() => router.push(item.url)}
+                        className="flex gap-2 items-center cursor-pointer"
+                      >
+                        <item.icon size={16} />
+                        <span>{item.title}</span>
+                      </span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
