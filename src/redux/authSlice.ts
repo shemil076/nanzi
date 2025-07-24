@@ -43,19 +43,31 @@ export const login = createAsyncThunk(
   },
 );
 
-export const refreshToken = createAsyncThunk(
-  '/api/auth/refresh',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await axios.post<{ accessToken: string }>(
-        '/api/auth/refresh',
-      );
-      return response.data.accessToken;
-    } catch (error: any) {
-      return rejectWithValue(error.response.data.message);
-    }
-  },
-);
+export const refreshToken = createAsyncThunk<
+  string,
+  void,
+  { rejectValue: string }
+>('auth/refresh', async (_, { rejectWithValue }) => {
+  try {
+    console.log('Attempting to refresh token');
+    const response = await axios.post<{ accessToken: string }>(
+      '/api/auth/refresh',
+      {},
+      { withCredentials: true },
+    );
+    console.log('Refresh token response:', response.data);
+    return response.data.accessToken;
+  } catch (error: any) {
+    console.log('Refresh token error:', {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message,
+    });
+    return rejectWithValue(
+      error.response?.data?.message || 'Failed to refresh token',
+    );
+  }
+});
 
 export const logout = createAsyncThunk(
   '/api/auth/logout',

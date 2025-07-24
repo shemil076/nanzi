@@ -24,7 +24,12 @@ export const useAuth = () => {
   };
 
   const handleRefreshToken = async () => {
-    await dispatch(refreshToken());
+    try {
+      const result = await dispatch(refreshToken()).unwrap();
+      return result; // Returns the accessToken string directly
+    } catch (error) {
+      throw error; // Let the interceptor handle the error
+    }
   };
 
   return {
