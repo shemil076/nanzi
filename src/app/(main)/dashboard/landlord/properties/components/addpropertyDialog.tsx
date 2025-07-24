@@ -10,8 +10,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../../../../../../components/ui/dialog';
-import { Button } from '../../../../../../components/ui/button';
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { CircleCheckBig, HousePlus, XCircle } from 'lucide-react';
 import z from 'zod';
 import { useForm } from 'react-hook-form';
@@ -22,15 +22,15 @@ import {
   FormField,
   FormItem,
   FormLabel,
-} from '../../../../../../components/ui/form';
-import { Input } from '../../../../../../components/ui/input';
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   LandSizeUnit,
   LandSizeUnitLabels,
   PropertyType,
   PropertyLabels,
   NewProperty,
-} from '../../../../../../types/property';
+} from '@/types/property';
 import StatusBar from './status-bar';
 import {
   Select,
@@ -38,10 +38,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../../../../components/ui/select';
-import { Textarea } from '../../../../../../components/ui/textarea';
-import { useCreateProperty } from '../../../../../../hooks/userProperty';
-import { useAuth } from '../../../../../../hooks/aueAuth';
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { useCreateProperty } from '@/hooks/userProperty';
+import { useAuth } from '@/hooks/aueAuth';
 import { toast } from 'sonner';
 
 const propertyForm = z.object({
@@ -63,7 +63,11 @@ const propertyForm = z.object({
 
 type PropertyFormData = z.infer<typeof propertyForm>;
 
-const AddPropertyDialog = () => {
+interface AddPropertyDialogProps {
+  loadProperties: () => Promise<void>;
+}
+
+const AddPropertyDialog = ({ loadProperties }: AddPropertyDialogProps) => {
   const { user, accessToken } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<number>(1);
@@ -167,7 +171,7 @@ const AddPropertyDialog = () => {
         form.reset();
         setStep(1);
 
-        // loadVehicles();
+        loadProperties();
       }
     }
   };

@@ -7,6 +7,24 @@ export enum PropertyType {
   LAND = 'LAND',
 }
 
+export enum PropertyStatus {
+  AVAILABLE = 'AVAILABLE',
+  RENTED = 'RENTED',
+  PENDING = 'PENDING',
+}
+
+export const PropertyStatusLabels: Record<PropertyStatus, string> = {
+  [PropertyStatus.AVAILABLE]: 'Available',
+  [PropertyStatus.RENTED]: 'Rented',
+  [PropertyStatus.PENDING]: 'Pending',
+};
+
+export const PropertyStatusVariant: Record<PropertyStatus, string> = {
+  [PropertyStatus.AVAILABLE]: 'destructive',
+  [PropertyStatus.RENTED]: 'outline',
+  [PropertyStatus.PENDING]: 'default',
+};
+
 export enum LandSizeUnit {
   PERCHES = 'PERCHES',
   ACRES = 'ACRES',
@@ -16,7 +34,7 @@ export const PropertyLabels: Record<PropertyType, string> = {
   [PropertyType.HOUSE]: 'House',
   [PropertyType.APARTMENT]: 'Apartment',
   [PropertyType.COMMERCIAL]: 'Commercial Space',
-  [PropertyType.LAND]: 'LandPlot',
+  [PropertyType.LAND]: 'Land Plot',
 };
 
 export const PropertyIcon: Record<PropertyType, LucideIcon> = {

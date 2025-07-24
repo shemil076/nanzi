@@ -3,7 +3,7 @@ import { Property } from '../../types/property';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const reformatProperty = (data: any): Property => {
   const formattedProperty: Property = {
-    id: data.iD,
+    id: data.id,
     title: data.title,
     description: data.description,
     address: data.address,

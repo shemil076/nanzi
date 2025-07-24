@@ -3,7 +3,11 @@
 
 import { useEffect, useState } from 'react';
 import { NewProperty, Property } from '../types/property';
-import { createProperty, fetchProperties } from '../lib/api/property';
+import {
+  createProperty,
+  fetchProperties,
+  fetchProperty,
+} from '../lib/api/property';
 
 export const useCreateProperty = () => {
   const [property, setProperty] = useState<Property | null>(null);
@@ -63,4 +67,36 @@ export const useProperties = (accessToken: string) => {
   }, [accessToken]);
 
   return { properties, loadProperties, isLoading, error };
+};
+
+export const useProperty = (accessToken: string, id: string) => {
+  const [property, setProperty] = useState<Property | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const loadProperty = async () => {
+    if (!accessToken || !id) {
+      setError(new Error('No access or Invalid id'));
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const data = await fetchProperty(accessToken, id);
+      setProperty(data);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (accessToken && id) {
+      loadProperty();
+    }
+  }, [accessToken, id]);
+
+  return { property, loadProperty, isLoading, error };
 };

@@ -3,11 +3,11 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { Property } from '../../../../../../types/property';
+import { Property } from '@/types/property';
 import { getColumnsForProperties } from './columns';
-import { Card } from '../../../../../../components/ui/card';
 import {
   Table,
   TableBody,
@@ -15,7 +15,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../../../../../components/ui/table';
+} from '@/components/ui/table';
+import PaginationPanel from '../../../../../../components/custom/pagination';
 
 interface DataTableProps {
   data: Property[];
@@ -29,6 +30,12 @@ const PropertiesTable = <TData, TValue>({ data }: DataTableProps) => {
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
   });
 
   return (
@@ -81,6 +88,10 @@ const PropertiesTable = <TData, TValue>({ data }: DataTableProps) => {
               )}
             </TableBody>
           </Table>
+
+          <div className="flex justify-end items-center mt-4 space-x-2">
+            <PaginationPanel table={table} />
+          </div>
         </>
       )}
     </div>

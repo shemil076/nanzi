@@ -38,3 +38,21 @@ export const fetchProperties = async (
       throw err;
     });
 };
+
+export const fetchProperty = async (
+  accessToken: string,
+  id: string,
+): Promise<Property> => {
+  return axios
+    .get(`/api/property/${id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      return reformatProperty(res.data);
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
