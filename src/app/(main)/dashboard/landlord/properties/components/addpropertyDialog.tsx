@@ -40,8 +40,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { useCreateProperty } from '@/hooks/userProperty';
-import { useAuth } from '@/hooks/aueAuth';
+import { useCreateProperty } from '@/hooks/useProperty';
+import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
 const propertyForm = z.object({

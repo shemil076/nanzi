@@ -3,7 +3,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../../../hooks/aueAuth';
+import { useAuth } from '../../../hooks/useAuth';
 
 export default function DashboardRedirectPage() {
   const { user } = useAuth();

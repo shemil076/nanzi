@@ -1,7 +1,7 @@
 'use client';
 import { Card, CardHeader } from '../../../../../../components/ui/card';
-import { useAuth } from '../../../../../../hooks/aueAuth';
-import { useProperties } from '../../../../../../hooks/userProperty';
+import { useAuth } from '../../../../../../hooks/useAuth';
+import { useProperties } from '../../../../../../hooks/useProperty';
 import AddPropertyDialog from './addpropertyDialog';
 import PropertiesTable from './data-table';
 

@@ -1,6 +1,6 @@
 'use client';
 import { use } from 'react';
-import ParentContainer from './components/parent-container';
+import ParentContainer from './components/parent-containe';
 
 interface PropertyPageProps {
   params: Promise<{ id: string }>;
@@ -13,7 +13,7 @@ const PropertyPage = ({ params }: PropertyPageProps) => {
   }
   return (
     <div>
-      <ParentContainer id={id}/>
+      <ParentContainer id={id} />
     </div>
   );
 };

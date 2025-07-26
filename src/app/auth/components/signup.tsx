@@ -20,7 +20,7 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/hooks/aueAuth';
+import { useAuth } from ';
 import { RegisterCredentials } from '@/types/auth';
 import { Role } from '@/types/user';
 import { useRouter } from 'next/navigation';

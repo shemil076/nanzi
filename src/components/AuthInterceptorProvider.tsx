@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { useAuth } from '../hooks/aueAuth';
+import { useAuth } from '../hooks/useAuth';
 import { RootState } from '../redux/store';
 
 axios.defaults.baseURL = 'http://localhost:5001';
