@@ -20,10 +20,10 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useAuth } from ';
 import { RegisterCredentials } from '@/types/auth';
 import { Role } from '@/types/user';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../../../hooks/useAuth';
 
 const formSchema = z.object({
   email: z.string().email('Invalid email format'),

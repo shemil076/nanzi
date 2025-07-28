@@ -1,7 +1,6 @@
 'use client';
 
 import { useAuth } from '../../../../../../../hooks/useAuth';
-import { useIssuesByProperty } from '../../../../../../../hooks/useIssue';
 import { useProperty } from '../../../../../../../hooks/useProperty';
 import { PropertyStatus } from '../../../../../../../types/property';
 import IssuesContent from './issues-container';

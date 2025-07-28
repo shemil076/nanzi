@@ -24,7 +24,18 @@ const PaymentsContainer = ({ propertyId }: { propertyId: string }) => {
         <div></div>
       </CardHeader>
       <CardContent className="">
-        <PaymentHistoryTable data={payments} />
+        <CardContent className="">
+          {payments && payments.length > 0 ? (
+            <PaymentHistoryTable data={payments} />
+          ) : (
+            <div className="flex flex-col items-center m-5  text-gray-400">
+              <div className=" text-sm font-semibold">
+                No Payments at the Moment
+              </div>
+              <div className="text-xs"> Will inform once you get payments </div>
+            </div>
+          )}
+        </CardContent>
       </CardContent>
     </Card>
   );

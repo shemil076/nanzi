@@ -3,7 +3,6 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import PaymentComponents from './payment-component';
 import PaginationPanel from '../../../../../../../components/custom/pagination';
 import { Issue } from '../../../../../../../types/issue';
 import { getColumnsForIssues } from './issue-columns';

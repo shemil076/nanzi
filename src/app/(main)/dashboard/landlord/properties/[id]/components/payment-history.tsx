@@ -1,4 +1,8 @@
-import { getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import {
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
 import { Payment } from '../../../../../../../types/payment';
 import { getColumnsForPayments } from './payment-columns';
 import PaymentComponents from './payment-component';

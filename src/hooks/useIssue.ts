@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
-import { fetchIssuesByProperty } from "../lib/api/issue";
-import { Issue } from "../types/issue";
+import { useEffect, useState } from 'react';
+import { fetchIssuesByProperty } from '../lib/api/issue';
+import { Issue } from '../types/issue';
 
 export const useIssuesByProperty = (
   accessToken: string,
