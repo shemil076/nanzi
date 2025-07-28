@@ -2,11 +2,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { NewProperty, Property } from '../types/property';
+import { NewProperty, PropertiesOverview, Property } from '../types/property';
 import {
   createProperty,
   fetchProperties,
   fetchProperty,
+  getPropertiesOverview,
 } from '../lib/api/property';
 
 export const useCreateProperty = () => {
@@ -99,4 +100,37 @@ export const useProperty = (accessToken: string, id: string) => {
   }, [accessToken, id]);
 
   return { property, loadProperty, isLoading, error };
+};
+
+export const usePropertiesOVerview = (accessToken: string) => {
+  const [propertiesOverview, setPropertiesOverview] =
+    useState<PropertiesOverview | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const loadPropertiesOverview = async () => {
+    if (!accessToken) {
+      setError(new Error('No access'));
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const data = await getPropertiesOverview(accessToken);
+      setPropertiesOverview(data);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (accessToken) {
+      loadPropertiesOverview();
+    }
+  }, [accessToken]);
+
+  return { propertiesOverview, loadPropertiesOverview, isLoading, error };
 };

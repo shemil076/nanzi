@@ -1,4 +1,4 @@
-import { Property } from '../../types/property';
+import { PropertiesOverview, Property } from '../../types/property';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const reformatProperty = (data: any): Property => {
@@ -23,4 +23,17 @@ export const reformatProperty = (data: any): Property => {
   };
 
   return formattedProperty;
+};
+
+export const reformatPropertiesOverview = (data: any): PropertiesOverview => {
+  const reformattedPropertyOverview: PropertiesOverview = {
+    availablePropertyCount: data.availablePropertyCount,
+    rentedPropertyCount: data.rentedPropertyCount,
+    tenantCount: data.tenantCount,
+    monthlyRevenue: data.monthlyRevenue,
+    highPriorityIssues: data.highPriorityIssues,
+    mediumPriorityIssues: data.mediumPriorityIssues,
+    lowPriorityIssues: data.lowPriorityIssues,
+  };
+  return reformattedPropertyOverview;
 };

@@ -85,3 +85,13 @@ export interface NewProperty {
   isFurnished?: boolean;
   apartmentComplex?: string;
 }
+
+export interface PropertiesOverview {
+  availablePropertyCount: number;
+  rentedPropertyCount: number;
+  tenantCount: number;
+  monthlyRevenue: number;
+  highPriorityIssues: number;
+  mediumPriorityIssues: number;
+  lowPriorityIssues: number;
+}

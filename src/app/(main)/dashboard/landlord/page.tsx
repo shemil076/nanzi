@@ -1,5 +1,11 @@
+import PropertyOverViewHeader from './components/propertiesOverviewHeader';
+
 const Landlord = () => {
-  return <div>hi Landlord</div>;
+  return (
+    <div>
+      <PropertyOverViewHeader />
+    </div>
+  );
 };
 
 export default Landlord;

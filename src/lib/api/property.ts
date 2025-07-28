@@ -1,6 +1,13 @@
 import axios from 'axios';
-import { NewProperty, Property } from '../../types/property';
-import { reformatProperty } from '../utils/property';
+import {
+  NewProperty,
+  PropertiesOverview,
+  Property,
+} from '../../types/property';
+import {
+  reformatPropertiesOverview,
+  reformatProperty,
+} from '../utils/property';
 
 export const createProperty = async (
   newProperty: NewProperty,
@@ -51,6 +58,23 @@ export const fetchProperty = async (
     })
     .then((res) => {
       return reformatProperty(res.data);
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
+
+export const getPropertiesOverview = async (
+  accessToken: string,
+): Promise<PropertiesOverview> => {
+  return axios
+    .get('/api/property/propertyOverview', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      return reformatPropertiesOverview(res.data);
     })
     .catch((err) => {
       throw err;
