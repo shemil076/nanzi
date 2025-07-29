@@ -10,6 +10,7 @@ import {
 } from '../types/property';
 import {
   createProperty,
+  deletePropertyById,
   fetchProperties,
   fetchProperty,
   getPropertiesOverview,
@@ -175,4 +176,30 @@ export const useUpdateProperty = () => {
   };
 
   return { updateProperty, updatedProperty, isLoading };
+};
+
+export const useDeleteProperty = () => {
+  const [deletedProperty, setDeletedProperty] = useState<Property | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const deleteProperty = async (propertyId: string, accessToken: string) => {
+    if (!propertyId) {
+      setError(new Error('Invalid data'));
+      setIsLoading(false);
+      return { success: false, error };
+    }
+    try {
+      setIsLoading(true);
+      const data = await deletePropertyById(accessToken, propertyId);
+      setDeletedProperty(data);
+      return { success: true };
+    } catch (err) {
+      setError(err as Error);
+      return { success: false, error };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  return { deleteProperty, deletedProperty, isLoading, error };
 };

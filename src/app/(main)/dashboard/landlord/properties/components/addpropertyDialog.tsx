@@ -157,12 +157,12 @@ const AddPropertyDialog = ({ loadProperties }: AddPropertyDialogProps) => {
       const { success } = await addProperty(newProperty, accessToken);
 
       if (!success) {
-        toast('Failed to create', {
+        toast('Failed to add the property', {
           icon: <XCircle className="text-red-500" />,
           className: 'flex items-center justify-center space-x-2',
         });
       } else {
-        toast('Successfully created', {
+        toast('Successfully added the property ', {
           icon: <CircleCheckBig className="text-green-500" />,
           className: 'flex items-center justify-center gap-5',
         });

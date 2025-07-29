@@ -98,16 +98,21 @@ const UpdatePropertyDialog = ({
   };
 
   const handleOnSubmit = async (values: z.infer<typeof propertyUpdateForm>) => {
-    if (values) {
-      let updatedProperty: UpdateProperty;
+    if (!values) return;
 
-      if (property.propertyType === PropertyType.HOUSE) {
+    const baseFields = {
+      title: values.title,
+      description: values.description,
+      address: values.address,
+      price: values.price,
+    };
+
+    let updatedProperty: UpdateProperty;
+
+    switch (property.propertyType) {
+      case PropertyType.HOUSE:
         updatedProperty = {
-          title: values.title,
-          description: values.description,
-          address: values.address,
-          price: values.price,
-
+          ...baseFields,
           numberOfBeds: values.numberOfBeds,
           numberOfBaths: values.numberOfBaths,
           houseSize: values.houseSize,
@@ -115,66 +120,76 @@ const UpdatePropertyDialog = ({
           landSize: values.landSize,
           landSizeUnit: values.landSizeUnit,
         };
-      }
+        break;
 
-      if (property.propertyType === PropertyType.APARTMENT) {
+      case PropertyType.APARTMENT:
         updatedProperty = {
-          title: values.title,
-          description: values.description,
-          address: values.address,
-          price: values.price,
-
+          ...baseFields,
           numberOfBeds: values.numberOfBeds,
           numberOfBaths: values.numberOfBaths,
           houseSize: values.houseSize,
           isFurnished: values.isFurnished,
           apartmentComplex: values.apartmentComplex,
         };
-      }
+        break;
 
-      if (
-        property.propertyType === PropertyType.LAND ||
-        property.propertyType === PropertyType.COMMERCIAL
-      ) {
+      case PropertyType.LAND:
+      case PropertyType.COMMERCIAL:
         updatedProperty = {
-          title: values.title,
-          description: values.description,
-          address: values.address,
-          price: values.price,
-
+          ...baseFields,
           landSize: values.landSize,
           landSizeUnit: values.landSizeUnit,
         };
-      }
+        break;
 
+      default:
+        toast('Unsupported property type', {
+          icon: <XCircle className="text-red-500" />,
+          className: 'flex items-center justify-center gap-5',
+        });
+        return;
+    }
+
+    try {
       const { success } = await updateProperty(
         property.id,
         updatedProperty,
         accessToken,
       );
 
-      if (!success) {
-        toast('Failed to create', {
-          icon: <XCircle className="text-red-500" />,
-          className: 'flex items-center justify-center space-x-2',
-        });
-      } else {
-        toast('Successfully created', {
-          icon: <CircleCheckBig className="text-green-500" />,
-          className: 'flex items-center justify-center gap-5',
-        });
+      const message = success
+        ? 'Successfully updated the details'
+        : 'Failed to update the details';
 
+      const icon = success ? (
+        <CircleCheckBig className="text-green-500" />
+      ) : (
+        <XCircle className="text-red-500" />
+      );
+
+      toast(message, {
+        icon,
+        className: 'flex items-center justify-center gap-5',
+      });
+
+      if (success) {
         setIsOpen(false);
         updateForm.reset();
-
         loadProperty();
       }
+    } catch (error) {
+      toast('An unexpected error occurred', {
+        icon: <XCircle className="text-red-500" />,
+        className: 'flex items-center justify-center gap-5',
+      });
+      console.error(error);
     }
   };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="h-8 flex gap-3 items-center">
+        <Button className=" flex gap-3 items-center">
           <Pencil />
           Update
         </Button>
@@ -223,7 +238,7 @@ const UpdatePropertyDialog = ({
                 [
                   ['numberOfBeds', 'Beds'],
                   ['numberOfBaths', 'Baths'],
-                  ['houseSize', 'House Size'],
+                  ['houseSize', 'House Size (sqft)'],
                 ].map(([name, label]) => (
                   <FormField
                     key={name}

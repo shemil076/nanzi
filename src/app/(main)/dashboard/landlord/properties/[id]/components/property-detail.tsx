@@ -1,3 +1,4 @@
+'use client';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import {
   Property,
@@ -11,6 +12,12 @@ import { formatPrice } from '@/lib/utils/helperFunctions';
 import { Badge } from '@/components/ui/badge';
 import { LandSizeUnit } from '../../../../../../../types/property';
 import UpdatePropertyDialog from './update-property-dialog';
+import { useDeleteProperty } from '../../../../../../../hooks/useProperty';
+import DeleteDialog from '../../../../../../../components/custom/delete-dialog';
+import { useAuth } from '../../../../../../../hooks/useAuth';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { CircleCheckBig, XCircle } from 'lucide-react';
 
 interface PropertyDetailContainerProps {
   property: Property;
@@ -23,7 +30,44 @@ const PropertyDetailContainer = ({
   isLoading,
   loadProperty,
 }: PropertyDetailContainerProps) => {
+  const { accessToken } = useAuth();
   const IconComponent = property && PropertyIcon[property.propertyType];
+  const router = useRouter();
+
+  const { deleteProperty } = useDeleteProperty();
+
+  const handleOnDelete = async () => {
+    const { id } = property;
+    if (!id) return;
+
+    try {
+      const { success } = await deleteProperty(id, accessToken);
+
+      const message = success
+        ? 'Successfully deleted the property'
+        : 'Failed to delete the property';
+
+      const icon = success ? (
+        <CircleCheckBig className="text-green-500" />
+      ) : (
+        <XCircle className="text-red-500" />
+      );
+
+      const toastClass = 'flex items-center justify-center gap-5';
+
+      toast(message, { icon, className: toastClass });
+
+      if (success) {
+        router.push('/dashboard/landlord/properties');
+      }
+    } catch (error) {
+      toast('An unexpected error occurred', {
+        icon: <XCircle className="text-red-500" />,
+        className: 'flex items-center justify-center gap-5',
+      });
+      console.error(error);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -49,10 +93,15 @@ const PropertyDetailContainer = ({
                 {PropertyStatusLabels[property.status]}
               </Badge>
             </div>
-            <div>
+            <div className="flex flex-row items-center gap-5">
               <UpdatePropertyDialog
                 property={property}
                 loadProperty={loadProperty}
+              />
+              <DeleteDialog
+                id={property.id}
+                handleDeactivate={handleOnDelete}
+                variant="outline"
               />
             </div>
           </CardHeader>

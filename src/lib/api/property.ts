@@ -103,3 +103,23 @@ export const updatePropertyById = async (
       throw err;
     });
 };
+
+export const deletePropertyById = async (
+  accessToken: string,
+  propertyId: string,
+): Promise<Property> => {
+  return axios
+    .patch(`/api/property/delete/${propertyId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      console.log('res', res.data);
+      return reformatProperty(res.data);
+    })
+    .catch((err) => {
+      console.log('Error occurred', err);
+      throw err;
+    });
+};
