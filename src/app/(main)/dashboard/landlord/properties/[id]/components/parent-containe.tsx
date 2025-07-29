@@ -10,7 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 
 const ParentContainer = ({ id }: { id: string }) => {
   const { accessToken } = useAuth();
-  const { property, isLoading } = useProperty(accessToken, id);
+  const { property, isLoading, loadProperty } = useProperty(accessToken, id);
 
   if (isLoading) {
     return (
@@ -22,7 +22,11 @@ const ParentContainer = ({ id }: { id: string }) => {
 
   return (
     <div className="flex flex-col gap-5">
-      <PropertyDetailContainer property={property} isLoading={isLoading} />
+      <PropertyDetailContainer
+        property={property}
+        isLoading={isLoading}
+        loadProperty={loadProperty}
+      />
 
       <div className="grid grid-cols-2 gap-5 ">
         {property && property.status === PropertyStatus.RENTED && (

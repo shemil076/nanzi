@@ -2,12 +2,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { NewProperty, PropertiesOverview, Property } from '../types/property';
+import {
+  NewProperty,
+  PropertiesOverview,
+  Property,
+  UpdateProperty,
+} from '../types/property';
 import {
   createProperty,
   fetchProperties,
   fetchProperty,
   getPropertiesOverview,
+  updatePropertyById,
 } from '../lib/api/property';
 
 export const useCreateProperty = () => {
@@ -16,7 +22,7 @@ export const useCreateProperty = () => {
   const [error, setError] = useState<Error | null>(null);
 
   const addProperty = async (newProperty: NewProperty, accessToken: string) => {
-    if (!newProperty) {
+    if (!newProperty || !accessToken) {
       setError(new Error('Invalid data'));
       setIsLoading(false);
       return { success: false, error };
@@ -133,4 +139,40 @@ export const usePropertiesOVerview = (accessToken: string) => {
   }, [accessToken]);
 
   return { propertiesOverview, loadPropertiesOverview, isLoading, error };
+};
+
+export const useUpdateProperty = () => {
+  const [updatedProperty, setUpdatedProperty] = useState<Property | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const updateProperty = async (
+    propertyId: string,
+    updatedDetails: UpdateProperty,
+    accessToken: string,
+  ) => {
+    if (!propertyId || !updatedDetails || !accessToken) {
+      setError(new Error('Invalid data'));
+      setIsLoading(false);
+      return { success: false, error };
+    }
+
+    try {
+      setIsLoading(true);
+      const data = await updatePropertyById(
+        accessToken,
+        propertyId,
+        updatedDetails,
+      );
+      setUpdatedProperty(data);
+      return { success: true };
+    } catch (err) {
+      setError(err as Error);
+      return { success: false, error };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { updateProperty, updatedProperty, isLoading };
 };

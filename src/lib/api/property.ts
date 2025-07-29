@@ -3,6 +3,7 @@ import {
   NewProperty,
   PropertiesOverview,
   Property,
+  UpdateProperty,
 } from '../../types/property';
 import {
   reformatPropertiesOverview,
@@ -77,6 +78,28 @@ export const getPropertiesOverview = async (
       return reformatPropertiesOverview(res.data);
     })
     .catch((err) => {
+      throw err;
+    });
+};
+
+export const updatePropertyById = async (
+  accessToken: string,
+  propertyId: string,
+  updateDetails: UpdateProperty,
+): Promise<Property> => {
+  console.log('Running', updateDetails);
+  return axios
+    .put(`/api/property/update/${propertyId}`, updateDetails, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      console.log('res', res.data);
+      return reformatProperty(res.data);
+    })
+    .catch((err) => {
+      console.log('Error occurred', err);
       throw err;
     });
 };

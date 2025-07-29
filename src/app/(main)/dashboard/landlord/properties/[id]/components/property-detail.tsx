@@ -10,15 +10,18 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { formatPrice } from '@/lib/utils/helperFunctions';
 import { Badge } from '@/components/ui/badge';
 import { LandSizeUnit } from '../../../../../../../types/property';
+import UpdatePropertyDialog from './update-property-dialog';
 
 interface PropertyDetailContainerProps {
   property: Property;
   isLoading: boolean;
+  loadProperty: () => Promise<void>;
 }
 
 const PropertyDetailContainer = ({
   property,
   isLoading,
+  loadProperty,
 }: PropertyDetailContainerProps) => {
   const IconComponent = property && PropertyIcon[property.propertyType];
 
@@ -37,15 +40,20 @@ const PropertyDetailContainer = ({
     <Card className="gap-0">
       {property ? (
         <>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className=" flex flex-row items-center justify-between">
             <div className="flex flex-row items-center gap-2">
               <IconComponent size={20} />
               <span className="text-2xl font-bold">{property.title}</span>
-            </div>
-            <div>
+
               <Badge variant={PropertyStatusVariant[property.status]}>
                 {PropertyStatusLabels[property.status]}
               </Badge>
+            </div>
+            <div>
+              <UpdatePropertyDialog
+                property={property}
+                loadProperty={loadProperty}
+              />
             </div>
           </CardHeader>
           <CardContent>
@@ -99,7 +107,7 @@ const PropertyDetailContainer = ({
               </div>
 
               {/* TODO: Implement to show the images */}
-              <div className="flex flex-col gap-4">
+              <div className="mt-5 flex flex-col gap-4">
                 <Skeleton className="h-[50px] w-[500px] rounded-2xl" />
                 <Skeleton className="h-[20px] w-[500px] rounded-2xl" />
                 <Skeleton className="h-[20px] w-[300px] rounded-2xl" />

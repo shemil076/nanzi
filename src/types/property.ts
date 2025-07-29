@@ -86,6 +86,21 @@ export interface NewProperty {
   apartmentComplex?: string;
 }
 
+export interface UpdateProperty {
+  title: string;
+  description: string;
+  address: string;
+  price: number;
+
+  numberOfBeds?: number;
+  numberOfBaths?: number;
+  landSize?: number;
+  landSizeUnit?: string;
+  houseSize?: number;
+  isFurnished?: boolean;
+  apartmentComplex?: string;
+}
+
 export interface PropertiesOverview {
   availablePropertyCount: number;
   rentedPropertyCount: number;

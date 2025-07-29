@@ -8,7 +8,7 @@ export const reformatProperty = (data: any): Property => {
     description: data.description,
     address: data.address,
     price: data.price,
-    landlordId: data.landlordID,
+    landlordId: data.landlordId,
     status: data.status,
     propertyType: data.propertyType,
     numberOfBeds: data.numberOfBeds ?? null,
