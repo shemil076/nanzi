@@ -32,7 +32,7 @@ export const fetchProperties = async (
   accessToken: string,
 ): Promise<Property[]> => {
   return axios
-    .get('/api/property/', {
+    .get('/api/property', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

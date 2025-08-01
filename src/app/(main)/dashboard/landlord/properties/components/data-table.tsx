@@ -1,5 +1,7 @@
+'use client';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -17,6 +19,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import PaginationPanel from '../../../../../../components/custom/pagination';
+import { useState } from 'react';
+import DropDownFilter from '../../../../../../components/custom/drop-down-filter';
+import {
+  PropertyLabels,
+  PropertyStatusLabels,
+  PropertyType,
+} from '../../../../../../types/property';
 
 interface DataTableProps {
   data: Property[];
@@ -25,10 +34,12 @@ interface DataTableProps {
 const columns = getColumnsForProperties();
 
 const PropertiesTable = <TData, TValue>({ data }: DataTableProps) => {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
@@ -36,12 +47,29 @@ const PropertiesTable = <TData, TValue>({ data }: DataTableProps) => {
         pageSize: 10,
       },
     },
+    state: {
+      columnFilters,
+    },
   });
 
   return (
     <div className=" flex-wrap rounded-md w-full">
       {data && (
         <>
+          <div className="flex flex-row-reverse gap-5 my-2">
+            <DropDownFilter
+              table={table}
+              title={'Property Type'}
+              selections={PropertyLabels}
+              column={'propertyType'}
+            />
+            <DropDownFilter
+              table={table}
+              title={'Status'}
+              selections={PropertyStatusLabels}
+              column={'status'}
+            />
+          </div>
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
