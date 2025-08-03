@@ -1,20 +1,13 @@
 import { Check, Eye, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '../ui/button';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from '../ui/card';
+import { Card, CardContent, CardHeader } from '../ui/card';
 import {
   formatDateForLocal,
   formatPrice,
   formatToShortDate,
 } from '../../lib/utils/helperFunctions';
-import {
-  Payment,
-  PaymentStatusVariant,
-} from '../../types/payment';
+import { Payment, PaymentStatusVariant } from '../../types/payment';
 
 interface PaymentComponentsProps {
   payment: Payment;

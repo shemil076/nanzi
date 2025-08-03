@@ -1,6 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
-import { fetchCurrentTenantsPayments, fetchPaymentsByProperty } from '../lib/api/payment';
+import {
+  fetchCurrentTenantsPayments,
+  fetchPaymentsByProperty,
+} from '../lib/api/payment';
 import { Payment } from '../types/payment';
 
 export const usePaymentsByProperty = (

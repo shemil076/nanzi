@@ -9,7 +9,6 @@ import {
 import { formatPrice } from '../../../../../lib/utils/helperFunctions';
 
 const NextPayment = ({
-  propertyId,
   monthlyRent,
 }: {
   propertyId: string;

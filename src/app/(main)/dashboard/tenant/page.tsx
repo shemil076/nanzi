@@ -1,4 +1,4 @@
-import ParentContainer from "./components/home-parent-container";
+import ParentContainer from './components/home-parent-container';
 
 const Tenant = () => {
   return (

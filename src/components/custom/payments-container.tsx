@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from '../ui/card';
+import { Card, CardContent, CardHeader } from '../ui/card';
 import { Payment } from '../../types/payment';
 import PaymentHistoryTable from './payment-history';
 
