@@ -1,16 +1,18 @@
 'use client';
 
 import { useAuth } from '../../../../../../../hooks/useAuth';
+import { usePaymentsByProperty } from '../../../../../../../hooks/usePayment';
 import { useProperty } from '../../../../../../../hooks/useProperty';
 import { PropertyStatus } from '../../../../../../../types/property';
-import IssuesContent from './issues-container';
-import PaymentsContainer from './payments-container';
-import PropertyDetailContainer from './property-detail';
+import PaymentsContainer from '../../../../../../../components/custom/payments-container';
+import PropertyDetailContainer from '../../../../../../../components/custom/property-detail';
 import { Card, CardContent } from '@/components/ui/card';
+import IssuesContent from '../../../../../../../components/custom/issues-container';
 
 const ParentContainer = ({ id }: { id: string }) => {
   const { accessToken } = useAuth();
   const { property, isLoading, loadProperty } = useProperty(accessToken, id);
+  const { payments } = usePaymentsByProperty(accessToken, property?.id);
 
   if (isLoading) {
     return (
@@ -30,7 +32,7 @@ const ParentContainer = ({ id }: { id: string }) => {
 
       <div className="grid grid-cols-2 gap-5 ">
         {property && property.status === PropertyStatus.RENTED && (
-          <PaymentsContainer propertyId={id} />
+          <PaymentsContainer payments={payments} />
         )}
         {property && property.status === PropertyStatus.RENTED && (
           <div>

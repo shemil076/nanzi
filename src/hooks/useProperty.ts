@@ -14,6 +14,7 @@ import {
   fetchProperties,
   fetchProperty,
   getPropertiesOverview,
+  getTenantsResidence,
   updatePropertyById,
 } from '../lib/api/property';
 
@@ -202,4 +203,38 @@ export const useDeleteProperty = () => {
     }
   };
   return { deleteProperty, deletedProperty, isLoading, error };
+};
+
+export const useTenantsResidence = (accessToken: string) => {
+  const [tenantsResidence, setTenantsResidence] = useState<Property | null>(
+    null,
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const loadProperty = async () => {
+    if (!accessToken) {
+      setError(new Error('No access'));
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const data = await getTenantsResidence(accessToken);
+      setTenantsResidence(data);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (accessToken) {
+      loadProperty();
+    }
+  }, [accessToken]);
+
+  return { tenantsResidence, loadProperty, isLoading, error };
 };

@@ -1,11 +1,7 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from '../../../../../../../components/ui/card';
-import { Skeleton } from '../../../../../../../components/ui/skeleton';
-import { useAuth } from '../../../../../../../hooks/useAuth';
-import { useIssuesByProperty } from '../../../../../../../hooks/useIssue';
+import { useAuth } from '../../hooks/useAuth';
+import { useIssuesByProperty } from '../../hooks/useIssue';
+import { Card, CardContent, CardHeader } from '../ui/card';
+import { Skeleton } from '../ui/skeleton';
 import IssueList from './issue-list';
 
 const IssuesContent = ({ propertyId }: { propertyId: string }) => {

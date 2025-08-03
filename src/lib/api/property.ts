@@ -115,8 +115,23 @@ export const deletePropertyById = async (
       },
     })
     .then((res) => {
-      console.log('res', res.data);
       return reformatProperty(res.data);
+    })
+    .catch((err) => {
+      console.log('Error occurred', err);
+      throw err;
+    });
+};
+
+export const getTenantsResidence = async (accessToken): Promise<Property> => {
+  return axios
+    .get('/api/property/tenants-residence', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      return reformatProperty(res.data.property);
     })
     .catch((err) => {
       console.log('Error occurred', err);

@@ -1,17 +1,20 @@
 import { Check, Eye, X } from 'lucide-react';
-import { Badge } from '../../../../../../../components/ui/badge';
-import { Button } from '../../../../../../../components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '../ui/button';
 import {
   Card,
   CardContent,
   CardHeader,
-} from '../../../../../../../components/ui/card';
+} from '../ui/card';
 import {
   formatDateForLocal,
   formatPrice,
   formatToShortDate,
-} from '../../../../../../../lib/utils/helperFunctions';
-import { Payment } from '../../../../../../../types/payment';
+} from '../../lib/utils/helperFunctions';
+import {
+  Payment,
+  PaymentStatusVariant,
+} from '../../types/payment';
 
 interface PaymentComponentsProps {
   payment: Payment;
@@ -34,7 +37,9 @@ const PaymentComponents = ({ payment }: PaymentComponentsProps) => {
 
           <div className="flex flex-col gap-1 items-center">
             <span className="font-semibold">{formatPrice(payment.amount)}</span>
-            <Badge>{payment.status}</Badge>
+            <Badge variant={PaymentStatusVariant[payment.status]}>
+              {payment.status}
+            </Badge>
           </div>
         </div>
       </CardHeader>

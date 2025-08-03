@@ -1,19 +1,15 @@
 import { Pencil } from 'lucide-react';
-import { Badge } from '../../../../../../../components/ui/badge';
-import { Button } from '../../../../../../../components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from '../../../../../../../components/ui/card';
+import { Card, CardContent, CardHeader } from '../ui/card';
 import {
   Issue,
   IssuePriorityLabels,
   IssuePriorityVariant,
   IssueStatusLabels,
   IssueStatusVariant,
-} from '../../../../../../../types/issue';
-import { formatToShortDate } from '../../../../../../../lib/utils/helperFunctions';
+} from '../../types/issue';
+import { formatToShortDate } from '../../lib/utils/helperFunctions';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 
 interface IssueComponentProp {
   issue: Issue;

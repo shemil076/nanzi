@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { Issue } from '../../../../../../../types/issue';
+import { Issue } from '../../types/issue';
 
 export const getColumnsForIssues = (): ColumnDef<Issue>[] => [
   {

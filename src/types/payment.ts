@@ -12,3 +12,9 @@ export interface Payment {
   paidAt: Date;
   status: PaymentStatus;
 }
+
+export const PaymentStatusVariant: Record<PaymentStatus, string> = {
+  [PaymentStatus.PENDING]: 'outline',
+  [PaymentStatus.APPROVED]: 'default',
+  [PaymentStatus.REJECTED]: 'destructive',
+};

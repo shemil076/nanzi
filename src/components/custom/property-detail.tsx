@@ -10,11 +10,11 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatPrice } from '@/lib/utils/helperFunctions';
 import { Badge } from '@/components/ui/badge';
-import { LandSizeUnit } from '../../../../../../../types/property';
-import UpdatePropertyDialog from './update-property-dialog';
-import { useDeleteProperty } from '../../../../../../../hooks/useProperty';
-import DeleteDialog from '../../../../../../../components/custom/delete-dialog';
-import { useAuth } from '../../../../../../../hooks/useAuth';
+import { LandSizeUnit } from '../../types/property';
+import UpdatePropertyDialog from '../../app/(main)/dashboard/landlord/properties/[id]/components/update-property-dialog';
+import { useDeleteProperty } from '../../hooks/useProperty';
+import DeleteDialog from './delete-dialog';
+import { useAuth } from '../../hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { CircleCheckBig, XCircle } from 'lucide-react';
@@ -23,12 +23,14 @@ interface PropertyDetailContainerProps {
   property: Property;
   isLoading: boolean;
   loadProperty: () => Promise<void>;
+  isTenant?: boolean;
 }
 
 const PropertyDetailContainer = ({
   property,
   isLoading,
   loadProperty,
+  isTenant,
 }: PropertyDetailContainerProps) => {
   const { accessToken } = useAuth();
   const IconComponent = property && PropertyIcon[property.propertyType];
@@ -90,20 +92,22 @@ const PropertyDetailContainer = ({
               <span className="text-2xl font-bold">{property.title}</span>
 
               <Badge variant={PropertyStatusVariant[property.status]}>
-                {PropertyStatusLabels[property.status]}
+                {isTenant ? 'OCCUPIED' : PropertyStatusLabels[property.status]}
               </Badge>
             </div>
-            <div className="flex flex-row items-center gap-5">
-              <UpdatePropertyDialog
-                property={property}
-                loadProperty={loadProperty}
-              />
-              <DeleteDialog
-                id={property.id}
-                handleDeactivate={handleOnDelete}
-                variant="outline"
-              />
-            </div>
+            {!isTenant && (
+              <div className="flex flex-row items-center gap-5">
+                <UpdatePropertyDialog
+                  property={property}
+                  loadProperty={loadProperty}
+                />
+                <DeleteDialog
+                  id={property.id}
+                  handleDeactivate={handleOnDelete}
+                  variant="outline"
+                />
+              </div>
+            )}
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2">

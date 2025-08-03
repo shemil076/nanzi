@@ -3,18 +3,18 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { Payment } from '../../../../../../../types/payment';
-import { getColumnsForPayments } from './payment-columns';
-import PaymentComponents from './payment-component';
-import PaginationPanel from '../../../../../../../components/custom/pagination';
+import { getColumnsForIssues } from './issue-columns';
+import IssueComponent from './issue-component';
+import { Issue } from '../../types/issue';
+import PaginationPanel from './pagination';
 
-interface PaymentHistoryProps {
-  data: Payment[];
+interface IssueListProps {
+  data: Issue[];
 }
 
-const columns = getColumnsForPayments();
+const columns = getColumnsForIssues();
 
-const PaymentHistoryTable = ({ data }: PaymentHistoryProps) => {
+const IssueList = ({ data }: IssueListProps) => {
   const table = useReactTable({
     data,
     columns,
@@ -22,7 +22,7 @@ const PaymentHistoryTable = ({ data }: PaymentHistoryProps) => {
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 4,
+        pageSize: 3,
       },
     },
   });
@@ -32,7 +32,7 @@ const PaymentHistoryTable = ({ data }: PaymentHistoryProps) => {
         <div>
           {table.getRowModel().rows.map((row, index) => (
             <div key={index}>
-              <PaymentComponents payment={row.original} />
+              <IssueComponent issue={row.original} />
             </div>
           ))}
 
@@ -47,4 +47,4 @@ const PaymentHistoryTable = ({ data }: PaymentHistoryProps) => {
   );
 };
 
-export default PaymentHistoryTable;
+export default IssueList;

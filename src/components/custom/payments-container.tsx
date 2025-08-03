@@ -4,15 +4,11 @@ import {
   Card,
   CardContent,
   CardHeader,
-} from '../../../../../../../components/ui/card';
-import { useAuth } from '../../../../../../../hooks/useAuth';
-import { usePaymentsByProperty } from '../../../../../../../hooks/usePayment';
+} from '../ui/card';
+import { Payment } from '../../types/payment';
 import PaymentHistoryTable from './payment-history';
 
-const PaymentsContainer = ({ propertyId }: { propertyId: string }) => {
-  const { accessToken } = useAuth();
-  const { payments } = usePaymentsByProperty(accessToken, propertyId);
-
+const PaymentsContainer = ({ payments }: { payments: Payment[] }) => {
   return (
     <Card className="gap-0">
       <CardHeader className="flex flex-row">

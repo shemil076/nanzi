@@ -1,5 +1,11 @@
+import ParentContainer from "./components/home-parent-container";
+
 const Tenant = () => {
-  return <div>hi Tenant</div>;
+  return (
+    <div>
+      <ParentContainer />
+    </div>
+  );
 };
 
 export default Tenant;
