@@ -2,6 +2,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useIssuesByProperty } from '../../hooks/useIssue';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import { Skeleton } from '../ui/skeleton';
+import AddIssueForm from './add-issue-form';
 import IssueList from './issue-list';
 
 const IssuesContent = ({ propertyId }: { propertyId: string }) => {
@@ -29,12 +30,14 @@ const IssuesContent = ({ propertyId }: { propertyId: string }) => {
   }
   return (
     <Card className="gap-0">
-      <CardHeader className="flex flex-row">
+      <CardHeader className="flex flex-row justify-between items-center">
         <div className="flex flex-col">
           <span className="text-2xl font-bold">Maintenance</span>
         </div>
 
-        <div></div>
+        <div>
+          <AddIssueForm />
+        </div>
       </CardHeader>
       <CardContent className="">
         {issues && issues.length > 0 ? (

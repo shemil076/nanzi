@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
-import { fetchIssuesByProperty } from '../lib/api/issue';
-import { Issue } from '../types/issue';
+import { createIssue, fetchIssuesByProperty } from '../lib/api/issue';
+import { Issue, NewIssue } from '../types/issue';
 
 export const useIssuesByProperty = (
   accessToken: string,
@@ -36,4 +36,32 @@ export const useIssuesByProperty = (
   }, [accessToken, propertyId]);
 
   return { issues, loadIssues, isLoading, error };
+};
+
+export const useCreateProperty = () => {
+  const [issue, setIssue] = useState<Issue | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const addIssue = async (newIssue: NewIssue, accessToken: string) => {
+    if (!newIssue || !accessToken) {
+      setError(new Error('Invalid data'));
+      setIsLoading(false);
+      return { success: false, error };
+    }
+
+    try {
+      setIsLoading(true);
+      const data = await createIssue(newIssue, accessToken);
+      setIssue(data);
+      return { success: true };
+    } catch (err) {
+      setError(err as Error);
+      return { success: false, error };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { addIssue, issue, isLoading };
 };

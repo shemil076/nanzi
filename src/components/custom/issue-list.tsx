@@ -41,7 +41,7 @@ const IssueList = ({ data }: IssueListProps) => {
           </div>
         </div>
       ) : (
-        <div>No trash for the moment</div>
+        <div>No issues for the moment</div>
       )}
     </div>
   );

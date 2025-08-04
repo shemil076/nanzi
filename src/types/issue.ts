@@ -53,3 +53,10 @@ export interface Issue {
   resolvedAt?: Date;
   priority: IssuePriority;
 }
+
+export interface NewIssue {
+  title: string;
+  description: string;
+  propertyId: string;
+  priority: IssuePriority;
+}

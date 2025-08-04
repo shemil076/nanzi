@@ -6,6 +6,7 @@ import { useTenantsResidence } from '../../../../../hooks/useProperty';
 import PaymentsContainer from '../../../../../components/custom/payments-container';
 import PropertyDetailContainer from '../../../../../components/custom/property-detail';
 import NextPayment from './next-payment';
+import IssuesContent from '../../../../../components/custom/issues-container';
 
 const ParentContainer = () => {
   const { accessToken } = useAuth();
@@ -33,6 +34,9 @@ const ParentContainer = () => {
               propertyId={tenantsResidence?.id}
               monthlyRent={tenantsResidence?.price}
             />
+          </div>
+          <div>
+            <IssuesContent propertyId={tenantsResidence?.id} />
           </div>
         </div>
       </div>
