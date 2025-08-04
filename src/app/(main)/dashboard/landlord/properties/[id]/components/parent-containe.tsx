@@ -32,9 +32,9 @@ const ParentContainer = ({ id }: { id: string }) => {
 
       <div className="grid grid-cols-2 gap-5 ">
         {property && property.status === PropertyStatus.RENTED && (
-         <div>
-           <PaymentsContainer payments={payments} />
-         </div>
+          <div>
+            <PaymentsContainer payments={payments} />
+          </div>
         )}
         {property && property.status === PropertyStatus.RENTED && (
           <div>

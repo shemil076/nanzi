@@ -4,7 +4,6 @@ import z from 'zod';
 import {
   IssuePriority,
   IssuePriorityLabels,
-  IssueStatus,
   NewIssue,
 } from '../../types/issue';
 import { useAuth } from '../../hooks/useAuth';
@@ -45,7 +44,7 @@ type IssueFormData = z.infer<typeof issueForm>;
 
 interface AddIssueFormProps {
   propertyId: string;
-   loadIssues: () => Promise<void>;
+  loadIssues: () => Promise<void>;
 }
 const AddIssueForm = ({ propertyId, loadIssues }: AddIssueFormProps) => {
   const { accessToken } = useAuth();
