@@ -38,7 +38,7 @@ export const useIssuesByProperty = (
   return { issues, loadIssues, isLoading, error };
 };
 
-export const useCreateProperty = () => {
+export const useCreateIssue = () => {
   const [issue, setIssue] = useState<Issue | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);

@@ -5,9 +5,14 @@ import { Skeleton } from '../ui/skeleton';
 import AddIssueForm from './add-issue-form';
 import IssueList from './issue-list';
 
-const IssuesContent = ({ propertyId }: { propertyId: string }) => {
+interface IssuesContentProps {
+  propertyId: string;
+  isTenant?: boolean;
+}
+
+const IssuesContent = ({ propertyId, isTenant }: IssuesContentProps) => {
   const { accessToken } = useAuth();
-  const { issues, isLoading, error } = useIssuesByProperty(
+  const { issues, loadIssues, isLoading, error } = useIssuesByProperty(
     accessToken,
     propertyId,
   );
@@ -35,9 +40,11 @@ const IssuesContent = ({ propertyId }: { propertyId: string }) => {
           <span className="text-2xl font-bold">Maintenance</span>
         </div>
 
-        <div>
-          <AddIssueForm />
-        </div>
+        {isTenant && (
+          <div>
+            <AddIssueForm propertyId={propertyId} loadIssues={loadIssues} />
+          </div>
+        )}
       </CardHeader>
       <CardContent className="">
         {issues && issues.length > 0 ? (

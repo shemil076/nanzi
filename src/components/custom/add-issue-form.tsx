@@ -5,6 +5,7 @@ import {
   IssuePriority,
   IssuePriorityLabels,
   IssueStatus,
+  NewIssue,
 } from '../../types/issue';
 import { useAuth } from '../../hooks/useAuth';
 import { useState } from 'react';
@@ -20,7 +21,7 @@ import {
   DialogFooter,
 } from '../ui/dialog';
 import { Button } from '../ui/button';
-import { TriangleAlert } from 'lucide-react';
+import { CircleCheckBig, TriangleAlert, XCircle } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
@@ -31,6 +32,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import { useCreateIssue } from '../../hooks/useIssue';
+import { toast } from 'sonner';
 
 const issueForm = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters long'),
@@ -40,9 +43,14 @@ const issueForm = z.object({
 
 type IssueFormData = z.infer<typeof issueForm>;
 
-const AddIssueForm = () => {
-  const { user, accessToken } = useAuth();
+interface AddIssueFormProps {
+  propertyId: string;
+   loadIssues: () => Promise<void>;
+}
+const AddIssueForm = ({ propertyId, loadIssues }: AddIssueFormProps) => {
+  const { accessToken } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const { addIssue } = useCreateIssue();
 
   const form = useForm<IssueFormData>({
     resolver: zodResolver(issueForm),
@@ -53,6 +61,34 @@ const AddIssueForm = () => {
     },
   });
 
+  const handleOnSubmit = async (values: z.infer<typeof issueForm>) => {
+    if (values) {
+      const newIssue: NewIssue = {
+        title: values.title,
+        description: values.description,
+        propertyId: propertyId,
+        priority: values.priority,
+      };
+      const { success } = await addIssue(newIssue, accessToken);
+
+      if (!success) {
+        toast('Failed to add the property', {
+          icon: <XCircle className="text-red-500" />,
+          className: 'flex items-center justify-center space-x-2',
+        });
+      } else {
+        toast('Successfully added the property ', {
+          icon: <CircleCheckBig className="text-green-500" />,
+          className: 'flex items-center justify-center gap-5',
+        });
+
+        setIsOpen(false);
+        form.reset();
+
+        loadIssues();
+      }
+    }
+  };
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -145,7 +181,10 @@ const AddIssueForm = () => {
               />
             </div>
             <DialogFooter>
-              <Button type="submit" onClick={() => {}}>
+              <Button
+                type="submit"
+                onClick={() => form.handleSubmit(handleOnSubmit)()}
+              >
                 Submit
               </Button>
             </DialogFooter>
