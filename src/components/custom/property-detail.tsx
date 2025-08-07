@@ -10,7 +10,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatPrice } from '@/lib/utils/helperFunctions';
 import { Badge } from '@/components/ui/badge';
-import { LandSizeUnit } from '../../types/property';
+import { LandSizeUnit, PropertyStatus } from '../../types/property';
 import UpdatePropertyDialog from '../../app/(main)/dashboard/landlord/properties/[id]/components/update-property-dialog';
 import { useDeleteProperty } from '../../hooks/useProperty';
 import DeleteDialog from './delete-dialog';
@@ -18,6 +18,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { CircleCheckBig, XCircle } from 'lucide-react';
+import RentPropertyForm from '../../app/(main)/dashboard/landlord/components/rent-property-form';
 
 interface PropertyDetailContainerProps {
   property: Property;
@@ -106,6 +107,9 @@ const PropertyDetailContainer = ({
                   handleDeactivate={handleOnDelete}
                   variant="outline"
                 />
+                {property.status === PropertyStatus.AVAILABLE && (
+                  <RentPropertyForm propertyId={property.id} />
+                )}
               </div>
             )}
           </CardHeader>
