@@ -14,6 +14,7 @@ import {
   fetchProperties,
   fetchProperty,
   getPropertiesOverview,
+  getPropertyToOccupy,
   getTenantsResidence,
   updatePropertyById,
 } from '../lib/api/property';
@@ -237,4 +238,38 @@ export const useTenantsResidence = (accessToken: string) => {
   }, [accessToken]);
 
   return { tenantsResidence, loadProperty, isLoading, error };
+};
+
+export const usePropertyToOccupy = (accessToken: string) => {
+  const [propertyToOccupy, setPropertyToOccupy] = useState<Property | null>(
+    null,
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const loadPropertyToOccupy = async () => {
+    if (!accessToken) {
+      setError(new Error('No access'));
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const data = await getPropertyToOccupy(accessToken);
+      setPropertyToOccupy(data);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (accessToken) {
+      loadPropertyToOccupy();
+    }
+  }, [accessToken]);
+
+  return { propertyToOccupy, loadPropertyToOccupy, isLoading, error };
 };
