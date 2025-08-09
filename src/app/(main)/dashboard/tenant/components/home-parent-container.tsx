@@ -7,6 +7,7 @@ import PaymentsContainer from '../../../../../components/custom/payments-contain
 import PropertyDetailContainer from '../../../../../components/custom/property-detail';
 import NextPayment from './next-payment';
 import IssuesContent from '../../../../../components/custom/issues-container';
+import { Rabbit } from 'lucide-react';
 
 const ParentContainer = () => {
   const { accessToken } = useAuth();
@@ -17,6 +18,18 @@ const ParentContainer = () => {
     accessToken,
     tenantsResidence?.id,
   );
+
+  if (!tenantsResidence) {
+    return (
+      <div className="h-100 flex flex-col text-center items-center justify-center">
+        <Rabbit color="gray" size={80} />
+        <div className="text-3xl font-bold text-gray-500">Unfortunately,</div>
+        <div className="font-semibold text-gray-500">
+          You do not currently occupy a property.
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col gap-5 ">
       <PropertyDetailContainer
@@ -32,10 +45,7 @@ const ParentContainer = () => {
         </div>
         <div className="grid grid-cols-1 gap-5">
           <div>
-            <NextPayment
-              propertyId={tenantsResidence?.id}
-              monthlyRent={tenantsResidence?.price}
-            />
+            <NextPayment monthlyRent={tenantsResidence?.price} />
           </div>
           <div>
             <IssuesContent propertyId={tenantsResidence?.id} isTenant={true} />

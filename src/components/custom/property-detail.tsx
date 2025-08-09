@@ -108,7 +108,10 @@ const PropertyDetailContainer = ({
                   variant="outline"
                 />
                 {property.status === PropertyStatus.AVAILABLE && (
-                  <RentPropertyForm propertyId={property.id} />
+                  <RentPropertyForm
+                    propertyId={property.id}
+                    loadProperty={loadProperty}
+                  />
                 )}
               </div>
             )}

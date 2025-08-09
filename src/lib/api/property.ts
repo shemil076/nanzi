@@ -138,3 +138,19 @@ export const getTenantsResidence = async (accessToken): Promise<Property> => {
       throw err;
     });
 };
+
+export const getPropertyToOccupy = async (accessToken): Promise<Property> => {
+  return axios
+    .get('/api/property/tenant-to-occupy', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      return reformatProperty(res.data.property);
+    })
+    .catch((err) => {
+      console.log('Error occurred', err);
+      throw err;
+    });
+};

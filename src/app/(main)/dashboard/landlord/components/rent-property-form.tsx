@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../../../../../components/ui/dialog';
-import { CalendarIcon, UserPlus } from 'lucide-react';
+import { CalendarIcon, CircleCheckBig, UserPlus, XCircle } from 'lucide-react';
 import { Button } from '../../../../../components/ui/button';
 import { useAuth } from '../../../../../hooks/useAuth';
 import {
@@ -41,6 +41,9 @@ import { format } from 'date-fns';
 import { Calendar } from '../../../../../components/ui/calendar';
 import { Input } from '../../../../../components/ui/input';
 import { Label } from '../../../../../components/ui/label';
+import { useCreateBooking } from '../../../../../hooks/useBooking';
+import { toast } from 'sonner';
+import { NewBooking } from '../../../../../types/booking';
 
 const rentFormSchema = z.object({
   startDate: z.date().nullable(),
@@ -49,7 +52,14 @@ const rentFormSchema = z.object({
 
 type RentFormType = z.infer<typeof rentFormSchema>;
 
-const RentPropertyForm = ({ propertyId }: { propertyId: string }) => {
+interface RentPropertyFormProps {
+  propertyId: string;
+  loadProperty: () => Promise<void>;
+}
+const RentPropertyForm = ({
+  propertyId,
+  loadProperty,
+}: RentPropertyFormProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const { accessToken } = useAuth();
@@ -57,6 +67,7 @@ const RentPropertyForm = ({ propertyId }: { propertyId: string }) => {
   const [selectedTenant, setSelectedTenant] = useState<User>(null);
   const [showNoResults, setShowNoResults] = useState<boolean>(false);
   const [results, setResults] = useState<User[] | []>([]);
+  const { addBooking, booking } = useCreateBooking();
 
   const form = useForm<RentFormType>({
     resolver: zodResolver(rentFormSchema),
@@ -98,6 +109,33 @@ const RentPropertyForm = ({ propertyId }: { propertyId: string }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
+
+  const handleOnSubmit = async (values: z.infer<typeof rentFormSchema>) => {
+    if (values) {
+      const newBooking: NewBooking = {
+        propertyId: propertyId,
+        userId: selectedTenant.id,
+        startDate: values.startDate,
+        endDate: values.endDate,
+      };
+
+      const { success } = await addBooking(newBooking, accessToken);
+
+      if (!success) {
+        toast('Failed to rent the property', {
+          icon: <XCircle className="text-red-500" />,
+          className: 'flex items-center justify-center space-x-2',
+        });
+      } else {
+        toast('Successfully rented the property ', {
+          icon: <CircleCheckBig className="text-green-500" />,
+          className: 'flex items-center justify-center gap-5',
+        });
+
+        loadProperty();
+      }
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -242,7 +280,9 @@ const RentPropertyForm = ({ propertyId }: { propertyId: string }) => {
               </div>
             </div>
             <DialogFooter>
-              <Button>Create the rent</Button>
+              <Button onClick={() => form.handleSubmit(handleOnSubmit)()}>
+                Create the rent
+              </Button>
             </DialogFooter>
           </DialogContent>
         </form>

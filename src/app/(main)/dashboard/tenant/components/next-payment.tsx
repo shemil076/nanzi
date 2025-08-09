@@ -8,12 +8,7 @@ import {
 } from '../../../../../components/ui/card';
 import { formatPrice } from '../../../../../lib/utils/helperFunctions';
 
-const NextPayment = ({
-  monthlyRent,
-}: {
-  propertyId: string;
-  monthlyRent: number;
-}) => {
+const NextPayment = ({ monthlyRent }: { monthlyRent: number }) => {
   return (
     <Card>
       <CardHeader>
