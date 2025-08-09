@@ -19,15 +19,17 @@ const RentalPropertyAlert = ({
           Property rental alert
         </Badge>
       </CardHeader>
-      <CardContent className="flex flex-col gap-5">
-        <div>The landlord has added you as his tenant to his property.</div>
-
-        <div className="flex flex-row items-center gap-10">
-          <div className="text-lg font-bold">{propertyToOccupy.title}</div>
-          <div>{propertyToOccupy.address}</div>
+      <CardContent className="grid grid-cols-2 gap-5">
+        <div className="flex flex-col gap-2">
+          <div className="text-lg font-bold">
+            The landlord has added you as his tenant to his property.
+          </div>
+          <div className="flex flex-row items-center gap-10 text-gray-500">
+            <div className="text-lg font-bold">{propertyToOccupy.title}</div>
+            <div>{propertyToOccupy.address}</div>
+          </div>
         </div>
-
-        <Button>Occupy</Button>
+        <Button className="h-full text-2xl"> Occupy</Button>
       </CardContent>
     </Card>
   );
