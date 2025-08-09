@@ -11,13 +11,7 @@ import PropertyDetailContainer from '../../../../../components/custom/property-d
 import NextPayment from './next-payment';
 import IssuesContent from '../../../../../components/custom/issues-container';
 import { Rabbit } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from '../../../../../components/ui/card';
-import { Badge } from '../../../../../components/ui/badge';
-import { Button } from '../../../../../components/ui/button';
+import RentalPropertyAlert from './rental-alert';
 
 const ParentContainer = () => {
   const { accessToken } = useAuth();
@@ -36,27 +30,7 @@ const ParentContainer = () => {
         className={`h-100 flex flex-col ${propertyToOccupy ? 'gap-20' : ' items-center justify-center'}`}
       >
         {propertyToOccupy && (
-          <Card>
-            <CardHeader className="flex flex-row ">
-              <Badge className="text-xl font-semibold" variant="destructive">
-                Property rental alert
-              </Badge>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-5">
-              <div>
-                The landlord has added you as his tenant to his property.
-              </div>
-
-              <div className="flex flex-row items-center gap-10">
-                <div className="text-lg font-bold">
-                  {propertyToOccupy.title}
-                </div>
-                <div>{propertyToOccupy.address}</div>
-              </div>
-
-              <Button>Occupy</Button>
-            </CardContent>
-          </Card>
+          <RentalPropertyAlert propertyToOccupy={propertyToOccupy} />
         )}
         <div className="flex flex-col text-center items-center justify-center">
           <Rabbit color="gray" size={80} />
