@@ -45,3 +45,22 @@ export const getPendingPropertyByTenant = async (
       throw err;
     });
 };
+
+export const approveBookingById = async (
+  accessToken: string,
+  id: string,
+): Promise<Booking> => {
+  console.log('id', id);
+  return axios
+    .patch(`/api/booking/approve-booking/${id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      return reformatBooking(res.data);
+    })
+    .catch((error) => {
+      throw error;
+    });
+};

@@ -30,6 +30,7 @@ const ParentContainer = () => {
         {pendingPropertyBooking && (
           <RentalPropertyAlert
             pendingPropertyBooking={pendingPropertyBooking}
+            loadProperty={loadProperty}
           />
         )}
         <div className="flex flex-col text-center items-center justify-center">

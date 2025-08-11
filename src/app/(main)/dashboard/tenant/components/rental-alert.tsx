@@ -1,3 +1,4 @@
+import { CircleCheckBig, XCircle } from 'lucide-react';
 import { Badge } from '../../../../../components/ui/badge';
 import { Button } from '../../../../../components/ui/button';
 import {
@@ -5,13 +6,43 @@ import {
   CardContent,
   CardHeader,
 } from '../../../../../components/ui/card';
+import { useAuth } from '../../../../../hooks/useAuth';
+import { useApproveBooking } from '../../../../../hooks/useBooking';
 import { BookingWithPropertyInfo } from '../../../../../types/booking';
+import { toast } from 'sonner';
+
+interface RentalPropertyAlertProps {
+  pendingPropertyBooking: BookingWithPropertyInfo;
+  loadProperty: () => Promise<void>;
+}
 
 const RentalPropertyAlert = ({
   pendingPropertyBooking,
-}: {
-  pendingPropertyBooking: BookingWithPropertyInfo;
-}) => {
+  loadProperty,
+}: RentalPropertyAlertProps) => {
+  const { accessToken } = useAuth();
+  const { approveBooking } = useApproveBooking();
+
+  const handleOnSubmit = async () => {
+    const { success } = await approveBooking(
+      pendingPropertyBooking.id,
+      accessToken,
+    );
+
+    if (!success) {
+      toast('Failed to approve the booking', {
+        icon: <XCircle className="text-red-500" />,
+        className: 'flex items-center justify-center space-x-2',
+      });
+    } else {
+      toast('Successfully approved the booking', {
+        icon: <CircleCheckBig className="text-green-500" />,
+        className: 'flex items-center justify-center gap-5',
+      });
+
+      loadProperty();
+    }
+  };
   return (
     <Card>
       <CardHeader className="flex flex-row ">
@@ -31,7 +62,9 @@ const RentalPropertyAlert = ({
             <div> {pendingPropertyBooking.property.address}</div>
           </div>
         </div>
-        <Button className="h-full text-2xl"> Occupy</Button>
+        <Button className="h-full text-2xl" onClick={handleOnSubmit}>
+          Occupy
+        </Button>
       </CardContent>
     </Card>
   );

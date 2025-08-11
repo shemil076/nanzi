@@ -1,6 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
-import { createBooking, getPendingPropertyByTenant } from '../lib/api/booking';
+import {
+  approveBookingById,
+  createBooking,
+  getPendingPropertyByTenant,
+} from '../lib/api/booking';
 import { Booking, BookingWithPropertyInfo, NewBooking } from '../types/booking';
 
 export const useCreateBooking = () => {
@@ -64,6 +68,39 @@ export const usePendingPropertyBooking = (accessToken: string) => {
   return {
     pendingPropertyBooking,
     loadPropertyToOccupyWithBooking,
+    isLoading,
+    error,
+  };
+};
+
+export const useApproveBooking = () => {
+  const [booking, setBooking] = useState<Booking | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const approveBooking = async (bookingId: string, accessToken: string) => {
+    if (!bookingId || !accessToken) {
+      setError(new Error('Invalid data'));
+      setIsLoading(false);
+      return { success: false, error };
+    }
+
+    try {
+      setIsLoading(true);
+      const data = await approveBookingById(accessToken, bookingId);
+      setBooking(data);
+      return { success: true };
+    } catch (err) {
+      setError(err as Error);
+      return { success: false, error };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return {
+    approveBooking,
+    booking,
     isLoading,
     error,
   };
