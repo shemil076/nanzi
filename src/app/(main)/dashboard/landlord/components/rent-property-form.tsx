@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -11,7 +10,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../../../../../components/ui/dialog';
-import { CalendarIcon, CircleCheckBig, UserPlus, XCircle } from 'lucide-react';
+import {
+  CalendarIcon,
+  CircleCheckBig,
+  PenLine,
+  TriangleAlert,
+  UserPlus,
+  XCircle,
+} from 'lucide-react';
 import { Button } from '../../../../../components/ui/button';
 import { useAuth } from '../../../../../hooks/useAuth';
 import {
@@ -28,6 +34,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -44,6 +51,11 @@ import { Label } from '../../../../../components/ui/label';
 import { useCreateBooking } from '../../../../../hooks/useBooking';
 import { toast } from 'sonner';
 import { NewBooking } from '../../../../../types/booking';
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from '../../../../../components/ui/alert';
 
 const rentFormSchema = z.object({
   startDate: z.date().nullable(),
@@ -72,13 +84,18 @@ const RentPropertyForm = ({
   const [selectedTenant, setSelectedTenant] = useState<User>(null);
   const [showNoResults, setShowNoResults] = useState<boolean>(false);
   const [results, setResults] = useState<User[] | []>([]);
-  const { addBooking, booking } = useCreateBooking();
+  const { addBooking } = useCreateBooking();
+  const [showInviteForm, setShowInviteForm] = useState<boolean>(false);
+  const [isInviteEmailDisabled, setIsInviteEmailDisabled] =
+    useState<boolean>(true);
 
   const form = useForm<RentFormType>({
     resolver: zodResolver(rentFormSchema),
   });
 
-  // const invite for
+  const inviteForm = useForm<InviteTenantFormType>({
+    resolver: zodResolver(inviteTenantFormSchema),
+  });
 
   useEffect(() => {
     if (tenants) {
@@ -116,6 +133,11 @@ const RentPropertyForm = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
+
+  const handleShowInviteForm = () => {
+    setShowInviteForm((prev) => !prev);
+    inviteForm.setValue('email', query);
+  };
 
   const handleOnSubmit = async (values: z.infer<typeof rentFormSchema>) => {
     if (values) {
@@ -187,6 +209,7 @@ const RentPropertyForm = ({
                     <Button
                       variant="link"
                       className="h-5 text-blue-600 cursor-pointer px-1"
+                      onClick={handleShowInviteForm}
                     >
                       "{query}"
                     </Button>
@@ -221,12 +244,78 @@ const RentPropertyForm = ({
             </CommandList>
           </Command>
 
+          {showNoResults && (
+            <Alert variant="destructive">
+              {/* <PopcornIcon /> */}
+              <TriangleAlert />
+              <AlertTitle>
+                There is no tenant associated with the provided email address.
+              </AlertTitle>
+              <AlertDescription>
+                <p>What steps can you take regarding this? </p>
+                <ul className="list-inside list-disc text-sm">
+                  <li>
+                    Click the link above to invite your tenant to the system.
+                  </li>
+                  <li>
+                    A link will be sent to the tenant, and it will expire in 7
+                    days.
+                  </li>
+                </ul>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {showInviteForm && (
+            <Form {...inviteForm}>
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                }}
+                className="flex flex-col gap-5"
+              >
+                <FormField
+                  control={inviteForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <div className="grid grid-cols-2 gap-5 items-center">
+                          <Input
+                            className="border text-center disabled:text-black disabled:opacity-100 disabled:bg-gray-100"
+                            {...field}
+                            placeholder="ex: tom@mail.com"
+                            disabled={isInviteEmailDisabled}
+                          />
+                          <Button
+                            variant="outline"
+                            className="w-1/8"
+                            onClick={() =>
+                              setIsInviteEmailDisabled((pre) => !pre)
+                            }
+                          >
+                            <PenLine />
+                          </Button>
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex flex-row-reverse">
+                  <Button>Invite a new tenant</Button>
+                </div>
+              </form>
+            </Form>
+          )}
           {selectedTenant && (
             <Form {...form}>
               <form
                 onSubmit={(event) => {
                   event.preventDefault();
                 }}
+                className="flex flex-col gap-5"
               >
                 <div className="flex flex-col gap-5">
                   <div className="w-full flex flex-row gap-5">
@@ -295,18 +384,18 @@ const RentPropertyForm = ({
                     ))}
                   </div>
                 </div>
+                <DialogFooter>
+                  {selectedTenant && (
+                    <Button onClick={() => form.handleSubmit(handleOnSubmit)()}>
+                      Create the rent
+                    </Button>
+                  )}
+                </DialogFooter>
               </form>
             </Form>
           )}
         </div>
-        <DialogFooter>
-          <Button onClick={() => form.handleSubmit(handleOnSubmit)()}>
-            Create the rent
-          </Button>
-        </DialogFooter>
       </DialogContent>
-      {/* </form>
-      </Form> */}
     </Dialog>
   );
 };
