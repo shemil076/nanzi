@@ -213,71 +213,74 @@ const RentPropertyForm = ({
               </Command>
 
               {selectedTenant && (
-                <div className="w-full flex flex-row gap-5">
-                  <div className="w-full flex flex-col gap-2">
-                    <Label>Tenant's Email</Label>
-                    <Input
-                      value={selectedTenant.email}
-                      disabled={true}
-                      className="border text-center disabled:text-black disabled:opacity-100 disabled:bg-gray-100"
-                    />
+                <div className="flex flex-col gap-5">
+                  <div className="w-full flex flex-row gap-5">
+                    <div className="w-full flex flex-col gap-2">
+                      <Label>Tenant's Email</Label>
+                      <Input
+                        value={selectedTenant.email}
+                        disabled={true}
+                        className="border text-center disabled:text-black disabled:opacity-100 disabled:bg-gray-100"
+                      />
+                    </div>
+                    <div className="w-full flex flex-col gap-2">
+                      <Label>Tenant's Name</Label>
+                      <Input
+                        value={`${selectedTenant.firstName} ${selectedTenant.lastName}`}
+                        disabled={true}
+                        className="border text-center disabled:text-black disabled:opacity-100  disabled:bg-gray-100"
+                      />
+                    </div>
                   </div>
-                  <div className="w-full flex flex-col gap-2">
-                    <Label>Tenant's Name</Label>
-                    <Input
-                      value={`${selectedTenant.firstName} ${selectedTenant.lastName}`}
-                      disabled={true}
-                      className="border text-center disabled:text-black disabled:opacity-100  disabled:bg-gray-100"
-                    />
+
+                  <div className=" w-full flex flex-row gap-5">
+                    {(
+                      [
+                        ['startDate', 'Starting Date'],
+                        ['endDate', 'Ending Date'],
+                      ] as const
+                    ).map(([field, label], index) => (
+                      <FormField
+                        key={index}
+                        control={form.control}
+                        name={field}
+                        render={({ field, fieldState }) => (
+                          <FormItem className="w-full">
+                            <FormLabel>{label}</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant={'outline'}
+                                  className={` ${fieldState.error ? 'border-red-500' : ''}`}
+                                >
+                                  {field.value ? (
+                                    format(field.value, 'PPP')
+                                  ) : (
+                                    <span className="text-gray-500">
+                                      Pick a date
+                                    </span>
+                                  )}
+                                  <CalendarIcon
+                                    className="mr-2 h-4 w-4"
+                                    color="grey"
+                                  />
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0">
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          </FormItem>
+                        )}
+                      />
+                    ))}
                   </div>
                 </div>
               )}
-              <div className=" w-full flex flex-row gap-5">
-                {(
-                  [
-                    ['startDate', 'Starting Date'],
-                    ['endDate', 'Ending Date'],
-                  ] as const
-                ).map(([field, label], index) => (
-                  <FormField
-                    key={index}
-                    control={form.control}
-                    name={field}
-                    render={({ field, fieldState }) => (
-                      <FormItem className="w-full">
-                        <FormLabel>{label}</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant={'outline'}
-                              className={` ${fieldState.error ? 'border-red-500' : ''}`}
-                            >
-                              {field.value ? (
-                                format(field.value, 'PPP')
-                              ) : (
-                                <span className="text-gray-500">
-                                  Pick a date
-                                </span>
-                              )}
-                              <CalendarIcon
-                                className="mr-2 h-4 w-4"
-                                color="grey"
-                              />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      </FormItem>
-                    )}
-                  />
-                ))}
-              </div>
             </div>
             <DialogFooter>
               <Button onClick={() => form.handleSubmit(handleOnSubmit)()}>
