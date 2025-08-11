@@ -1,3 +1,5 @@
+import { Property } from './property';
+
 export interface NewBooking {
   propertyId: string;
   userId: string;
@@ -20,3 +22,7 @@ export interface Booking {
   endDate: Date;
   status: BookingStatus;
 }
+
+export type BookingWithPropertyInfo = Booking & {
+  property: Pick<Property, 'title' | 'address'>;
+};

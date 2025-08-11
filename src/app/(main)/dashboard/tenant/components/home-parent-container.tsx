@@ -2,22 +2,20 @@
 
 import { useAuth } from '../../../../../hooks/useAuth';
 import { useCurrentTenantsPayments } from '../../../../../hooks/usePayment';
-import {
-  usePropertyToOccupy,
-  useTenantsResidence,
-} from '../../../../../hooks/useProperty';
+import { useTenantsResidence } from '../../../../../hooks/useProperty';
 import PaymentsContainer from '../../../../../components/custom/payments-container';
 import PropertyDetailContainer from '../../../../../components/custom/property-detail';
 import NextPayment from './next-payment';
 import IssuesContent from '../../../../../components/custom/issues-container';
 import { Rabbit } from 'lucide-react';
 import RentalPropertyAlert from './rental-alert';
+import { usePendingPropertyBooking } from '../../../../../hooks/useBooking';
 
 const ParentContainer = () => {
   const { accessToken } = useAuth();
   const { tenantsResidence, loadProperty, isLoading } =
     useTenantsResidence(accessToken);
-  const { propertyToOccupy } = usePropertyToOccupy(accessToken);
+  const { pendingPropertyBooking } = usePendingPropertyBooking(accessToken);
 
   const { payments } = useCurrentTenantsPayments(
     accessToken,
@@ -27,10 +25,12 @@ const ParentContainer = () => {
   if (!tenantsResidence) {
     return (
       <div
-        className={`h-100 flex flex-col ${propertyToOccupy ? 'gap-20' : ' items-center justify-center'}`}
+        className={`h-100 flex flex-col ${pendingPropertyBooking ? 'gap-20' : ' items-center justify-center'}`}
       >
-        {propertyToOccupy && (
-          <RentalPropertyAlert propertyToOccupy={propertyToOccupy} />
+        {pendingPropertyBooking && (
+          <RentalPropertyAlert
+            pendingPropertyBooking={pendingPropertyBooking}
+          />
         )}
         <div className="flex flex-col text-center items-center justify-center">
           <Rabbit color="gray" size={80} />

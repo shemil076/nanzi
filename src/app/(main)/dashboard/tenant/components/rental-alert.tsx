@@ -5,12 +5,12 @@ import {
   CardContent,
   CardHeader,
 } from '../../../../../components/ui/card';
-import { Property } from '../../../../../types/property';
+import { BookingWithPropertyInfo } from '../../../../../types/booking';
 
 const RentalPropertyAlert = ({
-  propertyToOccupy,
+  pendingPropertyBooking,
 }: {
-  propertyToOccupy: Property;
+  pendingPropertyBooking: BookingWithPropertyInfo;
 }) => {
   return (
     <Card>
@@ -25,8 +25,10 @@ const RentalPropertyAlert = ({
             The landlord has added you as his tenant to his property.
           </div>
           <div className="flex flex-row items-center gap-10 text-gray-500">
-            <div className="text-lg font-bold">{propertyToOccupy.title}</div>
-            <div>{propertyToOccupy.address}</div>
+            <div className="text-lg font-bold">
+              {pendingPropertyBooking.property.title}
+            </div>
+            <div> {pendingPropertyBooking.property.address}</div>
           </div>
         </div>
         <Button className="h-full text-2xl"> Occupy</Button>

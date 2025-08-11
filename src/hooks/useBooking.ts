@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { createBooking } from '../lib/api/booking';
-import { Booking, NewBooking } from '../types/booking';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from 'react';
+import { createBooking, getPendingPropertyByTenant } from '../lib/api/booking';
+import { Booking, BookingWithPropertyInfo, NewBooking } from '../types/booking';
 
 export const useCreateBooking = () => {
   const [booking, setBooking] = useState<Booking | null>(null);
@@ -28,4 +29,42 @@ export const useCreateBooking = () => {
   };
 
   return { addBooking, booking, isLoading };
+};
+
+export const usePendingPropertyBooking = (accessToken: string) => {
+  const [pendingPropertyBooking, setPendingPropertyBooking] =
+    useState<BookingWithPropertyInfo | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const loadPropertyToOccupyWithBooking = async () => {
+    if (!accessToken) {
+      setError(new Error('No access'));
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const data = await getPendingPropertyByTenant(accessToken);
+      setPendingPropertyBooking(data);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (accessToken) {
+      loadPropertyToOccupyWithBooking();
+    }
+  }, [accessToken]);
+
+  return {
+    pendingPropertyBooking,
+    loadPropertyToOccupyWithBooking,
+    isLoading,
+    error,
+  };
 };
