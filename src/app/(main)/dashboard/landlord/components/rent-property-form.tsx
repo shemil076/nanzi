@@ -50,7 +50,12 @@ const rentFormSchema = z.object({
   endDate: z.date().nullable().optional(),
 });
 
+const inviteTenantFormSchema = z.object({
+  email: z.string().email('Invalid email format'),
+});
+
 type RentFormType = z.infer<typeof rentFormSchema>;
+type InviteTenantFormType = z.infer<typeof inviteTenantFormSchema>;
 
 interface RentPropertyFormProps {
   propertyId: string;
@@ -72,6 +77,8 @@ const RentPropertyForm = ({
   const form = useForm<RentFormType>({
     resolver: zodResolver(rentFormSchema),
   });
+
+  // const invite for
 
   useEffect(() => {
     if (tenants) {
@@ -148,71 +155,79 @@ const RentPropertyForm = ({
         </Button>
       </DialogTrigger>
 
-      <Form {...form}>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-          }}
-        >
-          <DialogContent
-            className="w-full sm:max-w-[00px] md:max-w-[700px]"
-            onPointerDownOutside={(e) => e.preventDefault()}
-            onInteractOutside={(e) => e.preventDefault()}
-            onEscapeKeyDown={(e) => e.preventDefault()}
+      <DialogContent
+        className="w-full sm:max-w-[00px] md:max-w-[700px]"
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+      >
+        <DialogHeader>
+          <DialogTitle>Rent this property</DialogTitle>
+          <div className="flex flex-row justify-center"></div>
+          <div className="flex flex-row justify-center"></div>
+          <DialogDescription />
+        </DialogHeader>
+
+        <div className="w-full flex flex-col gap-5">
+          <Command
+            className={`border ${results.length > 0 || showNoResults ? 'min-h-25' : 'min-h-10'} max-h-1/2`}
           >
-            <DialogHeader>
-              <DialogTitle>Rent this property</DialogTitle>
-              <div className="flex flex-row justify-center"></div>
-              <div className="flex flex-row justify-center"></div>
-              <DialogDescription />
-            </DialogHeader>
+            <CommandInput
+              placeholder="Search tenant by email..."
+              value={query}
+              onValueChange={setQuery}
+            />
+            <CommandList>
+              {isLoading && <div className="p-2 text-muted">Loading...</div>}
+              {!isLoading && showNoResults ? (
+                <CommandEmpty className="h-full flex flex-col items-center justify-center mt-2">
+                  No tenants found.
+                  <div className="font-light text-sm">
+                    Invite
+                    <Button
+                      variant="link"
+                      className="h-5 text-blue-600 cursor-pointer px-1"
+                    >
+                      "{query}"
+                    </Button>
+                    as a tenant
+                  </div>
+                </CommandEmpty>
+              ) : null}
+              {results &&
+                results.map((tenant) => (
+                  <CommandItem
+                    key={tenant.id}
+                    value={tenant.email}
+                    onSelect={() => {
+                      const selectedUser: User = {
+                        id: tenant.id,
+                        email: tenant.email,
+                        firstName: tenant.firstName,
+                        lastName: tenant.lastName,
+                        role: tenant.role,
+                      };
+                      setSelectedTenant(selectedUser);
+                    }}
+                  >
+                    <div className="flex flex-row gap-5 justify-center">
+                      <span className="font-bold">{tenant.email}</span>
+                      <div className=" text-sm">
+                        {tenant.firstName} {tenant.lastName}
+                      </div>
+                    </div>
+                  </CommandItem>
+                ))}
+            </CommandList>
+          </Command>
 
-            <div className="w-full flex flex-col gap-5">
-              <Command
-                className={`border ${results.length > 0 || showNoResults ? 'min-h-20' : 'min-h-10'} max-h-1/2`}
+          {selectedTenant && (
+            <Form {...form}>
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                }}
               >
-                <CommandInput
-                  placeholder="Search tenant by email..."
-                  value={query}
-                  onValueChange={setQuery}
-                />
-                <CommandList>
-                  {isLoading && (
-                    <div className="p-2 text-muted">Loading...</div>
-                  )}
-                  {!isLoading && showNoResults ? (
-                    <CommandEmpty className="h-full flex flex-row items-center justify-center">
-                      No tenants found.
-                    </CommandEmpty>
-                  ) : null}
-                  {results &&
-                    results.map((tenant) => (
-                      <CommandItem
-                        key={tenant.id}
-                        value={tenant.email}
-                        onSelect={() => {
-                          const selectedUser: User = {
-                            id: tenant.id,
-                            email: tenant.email,
-                            firstName: tenant.firstName,
-                            lastName: tenant.lastName,
-                            role: tenant.role,
-                          };
-                          setSelectedTenant(selectedUser);
-                        }}
-                      >
-                        <div className="flex flex-row gap-5 justify-center">
-                          <span className="font-bold">{tenant.email}</span>
-                          <div className=" text-sm">
-                            {tenant.firstName} {tenant.lastName}
-                          </div>
-                        </div>
-                      </CommandItem>
-                    ))}
-                </CommandList>
-              </Command>
-
-              {selectedTenant && (
                 <div className="flex flex-col gap-5">
                   <div className="w-full flex flex-row gap-5">
                     <div className="w-full flex flex-col gap-2">
@@ -280,16 +295,18 @@ const RentPropertyForm = ({
                     ))}
                   </div>
                 </div>
-              )}
-            </div>
-            <DialogFooter>
-              <Button onClick={() => form.handleSubmit(handleOnSubmit)()}>
-                Create the rent
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </form>
-      </Form>
+              </form>
+            </Form>
+          )}
+        </div>
+        <DialogFooter>
+          <Button onClick={() => form.handleSubmit(handleOnSubmit)()}>
+            Create the rent
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+      {/* </form>
+      </Form> */}
     </Dialog>
   );
 };
