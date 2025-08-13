@@ -56,14 +56,17 @@ import {
   AlertDescription,
   AlertTitle,
 } from '../../../../../components/ui/alert';
+import { useSendTenantInvitation } from '../../../../../hooks/use-tenant-invitation';
+import { NewTenantInvitation } from '../../../../../types/tenant-invitation';
 
 const rentFormSchema = z.object({
-  startDate: z.date().nullable(),
+  startDate: z.date(),
   endDate: z.date().nullable().optional(),
 });
 
 const inviteTenantFormSchema = z.object({
   email: z.string().email('Invalid email format'),
+  startDate: z.date(),
 });
 
 type RentFormType = z.infer<typeof rentFormSchema>;
@@ -88,6 +91,8 @@ const RentPropertyForm = ({
   const [showInviteForm, setShowInviteForm] = useState<boolean>(false);
   const [isInviteEmailDisabled, setIsInviteEmailDisabled] =
     useState<boolean>(true);
+
+  const { sendTenantInvitation } = useSendTenantInvitation();
 
   const form = useForm<RentFormType>({
     resolver: zodResolver(rentFormSchema),
@@ -139,6 +144,36 @@ const RentPropertyForm = ({
     inviteForm.setValue('email', query);
   };
 
+  const handleSendInvitation = async (
+    values: z.infer<typeof inviteTenantFormSchema>,
+  ) => {
+    if (values) {
+      const newInvitation: NewTenantInvitation = {
+        email: values.email,
+        propertyId: propertyId,
+        startDate: values.startDate,
+      };
+
+      const { success } = await sendTenantInvitation(
+        newInvitation,
+        accessToken,
+      );
+
+      if (!success) {
+        toast('Failed to send the invitation', {
+          icon: <XCircle className="text-red-500" />,
+          className: 'flex items-center justify-center space-x-2',
+        });
+      } else {
+        toast('Successfully sent the invitation', {
+          icon: <CircleCheckBig className="text-green-500" />,
+          className: 'flex items-center justify-center gap-5',
+        });
+
+        loadProperty();
+      }
+    }
+  };
   const handleOnSubmit = async (values: z.infer<typeof rentFormSchema>) => {
     if (values) {
       const newBooking: NewBooking = {
@@ -274,37 +309,82 @@ const RentPropertyForm = ({
                 }}
                 className="flex flex-col gap-5"
               >
-                <FormField
-                  control={inviteForm.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <div className="grid grid-cols-2 gap-5 items-center">
-                          <Input
-                            className="border text-center disabled:text-black disabled:opacity-100 disabled:bg-gray-100"
-                            {...field}
-                            placeholder="ex: tom@mail.com"
-                            disabled={isInviteEmailDisabled}
-                          />
-                          <Button
-                            variant="outline"
-                            className="w-1/8"
-                            onClick={() =>
-                              setIsInviteEmailDisabled((pre) => !pre)
-                            }
-                          >
-                            <PenLine />
-                          </Button>
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
+                <div className="grid grid-cols-2 items-center gap-5">
+                  <FormField
+                    control={inviteForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <div className="w-full flex flex-row gap-5 items-center">
+                            <Input
+                              className="border text-center disabled:text-black disabled:opacity-100 disabled:bg-gray-100"
+                              {...field}
+                              placeholder="ex: tom@mail.com"
+                              disabled={isInviteEmailDisabled}
+                            />
+                            <Button
+                              variant="outline"
+                              className="w-1/8"
+                              onClick={() =>
+                                setIsInviteEmailDisabled((pre) => !pre)
+                              }
+                            >
+                              <PenLine />
+                            </Button>
+                          </div>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={inviteForm.control}
+                    name="startDate"
+                    render={({ field, fieldState }) => (
+                      <FormItem className="w-full">
+                        <FormLabel>Start Date</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={'outline'}
+                              className={` ${fieldState.error ? 'border-red-500' : ''}`}
+                            >
+                              {field.value ? (
+                                format(field.value, 'PPP')
+                              ) : (
+                                <span className="text-gray-500">
+                                  Pick a date
+                                </span>
+                              )}
+                              <CalendarIcon
+                                className="mr-2 h-4 w-4"
+                                color="grey"
+                              />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 <div className="flex flex-row-reverse">
-                  <Button>Invite a new tenant</Button>
+                  <Button
+                    onClick={() =>
+                      inviteForm.handleSubmit(handleSendInvitation)()
+                    }
+                  >
+                    Invite a new tenant
+                  </Button>
                 </div>
               </form>
             </Form>

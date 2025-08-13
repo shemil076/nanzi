@@ -2,7 +2,8 @@ import { Property } from './property';
 
 export interface NewBooking {
   propertyId: string;
-  userId: string;
+  userId?: string;
+  invitationId?: string;
   startDate: Date;
   endDate?: Date;
 }
