@@ -5,8 +5,6 @@ export const sendInvitation = async (
   accessToken: string,
   newTenantInvitation: NewTenantInvitation,
 ): Promise<boolean> => {
-
-    console.log("newTenantInvitation",newTenantInvitation)
   return axios
     .post('/api/tenant-invitation/send-invitation', newTenantInvitation, {
       headers: {
