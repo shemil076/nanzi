@@ -13,9 +13,12 @@ import {
 } from '../../../../components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '../../../../components/ui/button';
+import { useAcceptTenantInvitation } from '../../../../hooks/use-tenant-invitation';
+import { AcceptInvitationCredentials } from '../../../../types/tenant-invitation';
+import { toast } from 'sonner';
+import { CircleCheckBig, XCircle } from 'lucide-react';
 
 const formSchema = z.object({
-  email: z.string().email('Invalid email format'),
   firstName: z.string().min(3, 'First name must be at least 3 characters long'),
   lastName: z.string().min(3, 'Last name must be at least 3 characters long'),
   password: z.string().min(8, 'Password must be at least 8 characters long'),
@@ -23,17 +26,52 @@ const formSchema = z.object({
 
 type registrationFormData = z.infer<typeof formSchema>;
 
-const RegistrationComponent = () => {
+const RegistrationComponent = ({
+  invitationId,
+  email,
+}: {
+  invitationId: string;
+  email: string;
+}) => {
+  const { acceptTenantInvitation } = useAcceptTenantInvitation();
   const router = useRouter();
   const form = useForm<registrationFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
       firstName: '',
       lastName: '',
       password: '',
     },
   });
+
+  const handleOnSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log('running');
+    if (values && invitationId && email) {
+      const credentials: AcceptInvitationCredentials = {
+        invitationId: invitationId,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: email,
+        password: values.password,
+      };
+
+      const { success } = await acceptTenantInvitation(credentials);
+
+      if (!success) {
+        toast('Failed to send the invitation', {
+          icon: <XCircle className="text-red-500" />,
+          className: 'flex items-center justify-center space-x-2',
+        });
+      } else {
+        toast('Successfully sent the invitation', {
+          icon: <CircleCheckBig className="text-green-500" />,
+          className: 'flex items-center justify-center gap-5',
+        });
+
+        router.push('/auth/signin');
+      }
+    }
+  };
   return (
     <Card className="w-full">
       <CardContent className="w-full flex flex-col gap-5">
@@ -109,7 +147,13 @@ const RegistrationComponent = () => {
                 )}
               />
 
-              <Button onClick={() => {}}>Create Account</Button>
+              <Button
+                onClick={() => {
+                  form.handleSubmit(handleOnSubmit)();
+                }}
+              >
+                Create Account
+              </Button>
             </div>
           </form>
         </Form>

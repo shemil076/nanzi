@@ -1,9 +1,14 @@
 import { useState } from 'react';
 import {
+  AcceptInvitationCredentials,
   InvitationWithBookingId,
   NewTenantInvitation,
 } from '../types/tenant-invitation';
-import { sendInvitation, verifyInvitation } from '../lib/api/tenant-invitation';
+import {
+  acceptInvitation,
+  sendInvitation,
+  verifyInvitation,
+} from '../lib/api/tenant-invitation';
 
 export const useSendTenantInvitation = () => {
   const [isSentSuccess, setIsSentSuccess] = useState<boolean | null>(null);
@@ -62,4 +67,33 @@ export const useVerifyTenantInvitationToken = () => {
   };
 
   return { tenantInvitation, isLoading, error, verifyTenantInvitation };
+};
+
+export const useAcceptTenantInvitation = () => {
+  const [isAccepted, setIsAccepted] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const acceptTenantInvitation = async (
+    acceptInvitationCredentials: AcceptInvitationCredentials,
+  ) => {
+    if (!acceptInvitationCredentials) {
+      setError(new Error('Invalid data'));
+      setIsLoading(false);
+      return { success: false, error };
+    }
+
+    try {
+      setIsLoading(true);
+      const data = await acceptInvitation(acceptInvitationCredentials);
+      setIsAccepted(data);
+      return { success: true };
+    } catch (err) {
+      setError(err as Error);
+      return { success: false, err };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  return { acceptTenantInvitation, isAccepted, isLoading };
 };

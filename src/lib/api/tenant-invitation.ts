@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {
+  AcceptInvitationCredentials,
   InvitationWithBookingId,
   NewTenantInvitation,
 } from '../../types/tenant-invitation';
@@ -30,6 +31,19 @@ export const verifyInvitation = async (
     .get(`/api/tenant-invitation/verify?token=${token}`)
     .then((res) => {
       return reformatInvitationWithBookingId(res.data);
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
+
+export const acceptInvitation = async (
+  acceptInvitationCredentials: AcceptInvitationCredentials,
+): Promise<boolean> => {
+  return axios
+    .post('/api/tenant-invitation/accept', acceptInvitationCredentials)
+    .then((res) => {
+      return res.data.accepted;
     })
     .catch((err) => {
       throw err;

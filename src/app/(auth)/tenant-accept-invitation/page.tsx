@@ -52,7 +52,10 @@ const AcceptInvitationPage = () => {
     <div className="w-full h-screen flex flex-col items-center justify-center bg-blue-100">
       {tenantInvitation ? (
         <div className="w-1/3 h-1/2 flex flex-col items-center justify-center">
-          <RegistrationComponent />
+          <RegistrationComponent
+            invitationId={tenantInvitation.id}
+            email={tenantInvitation.email}
+          />
         </div>
       ) : (
         <Card className="w-1/3 h-1/2 flex flex-col items-center justify-center">

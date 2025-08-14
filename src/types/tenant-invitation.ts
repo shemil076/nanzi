@@ -1,3 +1,4 @@
+import { RegisterCredentials } from './auth';
 import { NewBooking } from './booking';
 
 export enum InvitationStatus {
@@ -17,4 +18,8 @@ export interface InvitationWithBookingId {
   acceptedById?: string;
   propertyId: string;
   bookingId?: string;
+}
+
+export interface AcceptInvitationCredentials extends RegisterCredentials {
+  invitationId: string;
 }
