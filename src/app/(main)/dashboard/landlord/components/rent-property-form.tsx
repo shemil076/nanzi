@@ -169,6 +169,8 @@ const RentPropertyForm = ({
           icon: <CircleCheckBig className="text-green-500" />,
           className: 'flex items-center justify-center gap-5',
         });
+        loadProperty();
+        inviteForm.reset();
         setIsOpen(false);
       }
     }
@@ -196,6 +198,7 @@ const RentPropertyForm = ({
         });
 
         loadProperty();
+        form.reset();
       }
     }
   };
