@@ -12,7 +12,7 @@ import { formatPrice } from '@/lib/utils/helperFunctions';
 import { Badge } from '@/components/ui/badge';
 import { LandSizeUnit, PropertyStatus } from '../../types/property';
 import UpdatePropertyDialog from '../../app/(main)/dashboard/landlord/properties/[id]/components/update-property-dialog';
-import { useDeleteProperty } from '../../hooks/useProperty';
+import { useCurrentTenant, useDeleteProperty } from '../../hooks/useProperty';
 import DeleteDialog from './delete-dialog';
 import { useAuth } from '../../hooks/useAuth';
 import { useRouter } from 'next/navigation';
@@ -38,6 +38,10 @@ const PropertyDetailContainer = ({
   const router = useRouter();
 
   const { deleteProperty } = useDeleteProperty();
+  const { currentTenant } = useCurrentTenant(
+    accessToken,
+    property ? property.id : '',
+  );
 
   const handleOnDelete = async () => {
     const { id } = property;
@@ -164,6 +168,18 @@ const PropertyDetailContainer = ({
                     </div>
                   </div>
                 ) : null}
+
+                {property.status === 'RENTED' && currentTenant && (
+                  <div className="flex flex-col gap-1 my-2">
+                    <div className=" text-sm font-bold">Current Tenant </div>
+                    <div className="flex flex-col gap-1 text-xs font-light ml-2">
+                      <div>
+                        Name: {currentTenant.firstName} {currentTenant.lastName}
+                      </div>
+                      <div>Email: {currentTenant.email}</div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* TODO: Implement to show the images */}

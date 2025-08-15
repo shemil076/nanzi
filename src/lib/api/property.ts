@@ -9,6 +9,8 @@ import {
   reformatPropertiesOverview,
   reformatProperty,
 } from '../utils/property';
+import { Tenant } from '../../types/tenant';
+import { reformatTenant } from '../utils/tenant';
 
 export const createProperty = async (
   newProperty: NewProperty,
@@ -148,6 +150,25 @@ export const getPropertyToOccupy = async (accessToken): Promise<Property> => {
     })
     .then((res) => {
       return reformatProperty(res.data.property);
+    })
+    .catch((err) => {
+      console.log('Error occurred', err);
+      throw err;
+    });
+};
+
+export const getCurrentTenant = async (
+  accessToken: string,
+  propertyId: string,
+): Promise<Tenant> => {
+  return axios
+    .get(`/api/property/current-tenant/${propertyId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      return reformatTenant(res.data);
     })
     .catch((err) => {
       console.log('Error occurred', err);

@@ -13,11 +13,13 @@ import {
   deletePropertyById,
   fetchProperties,
   fetchProperty,
+  getCurrentTenant,
   getPropertiesOverview,
   getPropertyToOccupy,
   getTenantsResidence,
   updatePropertyById,
 } from '../lib/api/property';
+import { Tenant } from '../types/tenant';
 
 export const useCreateProperty = () => {
   const [property, setProperty] = useState<Property | null>(null);
@@ -272,4 +274,36 @@ export const usePropertyToOccupy = (accessToken: string) => {
   }, [accessToken]);
 
   return { propertyToOccupy, loadPropertyToOccupy, isLoading, error };
+};
+
+export const useCurrentTenant = (accessToken: string, propertyId: string) => {
+  const [currentTenant, setCurrentTenant] = useState<Tenant | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetchCurrentTenant = async () => {
+    if (!accessToken || !propertyId) {
+      setError(new Error('No access'));
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const data = await getCurrentTenant(accessToken, propertyId);
+      setCurrentTenant(data);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (accessToken) {
+      fetchCurrentTenant();
+    }
+  }, [accessToken]);
+
+  return { currentTenant, fetchCurrentTenant, isLoading, error };
 };
