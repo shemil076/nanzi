@@ -1,4 +1,3 @@
-import { Pencil } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import {
   Issue,
@@ -9,7 +8,7 @@ import {
 } from '../../types/issue';
 import { formatToShortDate } from '../../lib/utils/helperFunctions';
 import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
+import UpdateIssueModal from './modals/update-issue-dialog';
 
 interface IssueComponentProp {
   issue: Issue;
@@ -44,10 +43,7 @@ const IssueComponent = ({ issue }: IssueComponentProp) => {
         </div>
 
         <div>
-          <Button variant="outline" className="h-8">
-            <Pencil />
-            <span>Update</span>
-          </Button>
+          <UpdateIssueModal issue={issue} />
         </div>
       </CardContent>
     </Card>
