@@ -60,3 +60,8 @@ export interface NewIssue {
   propertyId: string;
   priority: IssuePriority;
 }
+
+export interface NewIssueStatus {
+  id: string;
+  status: IssueStatus;
+}

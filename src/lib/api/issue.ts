@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Issue, NewIssue } from '../../types/issue';
+import { Issue, NewIssue, NewIssueStatus } from '../../types/issue';
 import { reformatIssue } from '../utils/issue';
 
 export const fetchIssuesByProperty = (
@@ -28,6 +28,24 @@ export const createIssue = async (
 ): Promise<Issue> => {
   return axios
     .post('/api/issue/create', newIssue, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      return reformatIssue(res.data);
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
+
+export const updateIssueStatusById = async (
+  newIssueStatus: NewIssueStatus,
+  accessToken: string,
+): Promise<Issue> => {
+  return axios
+    .patch('/api/issue/status', newIssueStatus, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
