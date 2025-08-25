@@ -1,6 +1,4 @@
 import { useMaintenanceContext } from '../../contexts/maintenance-context';
-import { useAuth } from '../../hooks/useAuth';
-import { useIssuesByProperty } from '../../hooks/useIssue';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import { Skeleton } from '../ui/skeleton';
 import AddIssueForm from './add-issue-form';
