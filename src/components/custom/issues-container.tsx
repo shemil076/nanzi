@@ -1,3 +1,4 @@
+import { useMaintenanceContext } from '../../contexts/maintenance-context';
 import { useAuth } from '../../hooks/useAuth';
 import { useIssuesByProperty } from '../../hooks/useIssue';
 import { Card, CardContent, CardHeader } from '../ui/card';
@@ -11,11 +12,13 @@ interface IssuesContentProps {
 }
 
 const IssuesContent = ({ propertyId, isTenant }: IssuesContentProps) => {
-  const { accessToken } = useAuth();
-  const { issues, loadIssues, isLoading, error } = useIssuesByProperty(
-    accessToken,
-    propertyId,
-  );
+  // const { accessToken } = useAuth();
+  // const { issues, loadIssues, isLoading, error } = useIssuesByProperty(
+  //   accessToken,
+  //   propertyId,
+  // );
+
+  const { issues, loadIssues, isLoading, error } = useMaintenanceContext();
 
   if (isLoading || error) {
     return (

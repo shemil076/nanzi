@@ -8,6 +8,7 @@ import PaymentsContainer from '../../../../../../../components/custom/payments-c
 import PropertyDetailContainer from '../../../../../../../components/custom/property-detail';
 import { Card, CardContent } from '@/components/ui/card';
 import IssuesContent from '../../../../../../../components/custom/issues-container';
+import { MaintenanceContextProvider } from '../../../../../../../contexts/maintenance-context';
 
 const ParentContainer = ({ id }: { id: string }) => {
   const { accessToken } = useAuth();
@@ -38,7 +39,9 @@ const ParentContainer = ({ id }: { id: string }) => {
         )}
         {property && property.status === PropertyStatus.RENTED && (
           <div>
-            <IssuesContent propertyId={id} />
+            <MaintenanceContextProvider propertyId={id}>
+              <IssuesContent propertyId={id} />
+            </MaintenanceContextProvider>
           </div>
         )}
       </div>
