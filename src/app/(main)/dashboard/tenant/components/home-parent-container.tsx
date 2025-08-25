@@ -10,6 +10,7 @@ import IssuesContent from '../../../../../components/custom/issues-container';
 import { Rabbit } from 'lucide-react';
 import RentalPropertyAlert from './rental-alert';
 import { usePendingPropertyBooking } from '../../../../../hooks/useBooking';
+import { MaintenanceContextProvider } from '../../../../../contexts/maintenance-context';
 
 const ParentContainer = () => {
   const { accessToken } = useAuth();
@@ -61,7 +62,12 @@ const ParentContainer = () => {
             <NextPayment monthlyRent={tenantsResidence?.price} />
           </div>
           <div>
-            <IssuesContent propertyId={tenantsResidence?.id} isTenant={true} />
+            <MaintenanceContextProvider propertyId={tenantsResidence?.id}>
+              <IssuesContent
+                propertyId={tenantsResidence?.id}
+                isTenant={true}
+              />
+            </MaintenanceContextProvider>
           </div>
         </div>
       </div>
