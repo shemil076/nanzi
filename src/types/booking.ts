@@ -5,7 +5,7 @@ export interface NewBooking {
   userId?: string;
   invitationId?: string;
   startDate: Date;
-  endDate?: Date;
+  endDate: Date;
 }
 
 export enum BookingStatus {
