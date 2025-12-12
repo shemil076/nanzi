@@ -148,7 +148,6 @@ const RentPropertyForm = ({
   const handleSendInvitation = async (
     values: z.infer<typeof inviteTenantFormSchema>,
   ) => {
-    console.log("values", values)
     if (values) {
       const newInvitation: NewTenantInvitation = {
         email: values.email,
@@ -177,8 +176,6 @@ const RentPropertyForm = ({
         setIsOpen(false);
       }
     }
-
-    console.log("values", values)
   };
   const handleOnSubmit = async (values: z.infer<typeof rentFormSchema>) => {
     if (values) {

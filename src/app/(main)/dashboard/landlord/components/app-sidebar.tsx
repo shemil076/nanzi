@@ -37,7 +37,7 @@ const items = [
   },
   {
     title: 'Settings',
-    url: '#',
+    url: '/dashboard/landlord/settings',
     icon: Settings,
   },
 ];
