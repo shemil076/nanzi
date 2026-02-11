@@ -18,6 +18,7 @@ import {
   TabsTrigger,
 } from '../../../../../components/ui/tabs';
 import { Separator } from '../../../../../components/ui/separator';
+import PersonalInfoSection from './components/personal-info-section';
 
 const SettingsPage = () => {
   const { accessToken } = useAuth();
@@ -84,6 +85,7 @@ const SettingsPage = () => {
                 <Separator />
               </div>
             </div>
+            <PersonalInfoSection user={userData} />
           </TabsContent>
         </Tabs>
       </CardContent>

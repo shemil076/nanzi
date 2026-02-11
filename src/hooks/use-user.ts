@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import { User } from '../types/auth';
-import { fetchUser } from '../lib/api/user';
+import { fetchUser, updateUserInfo } from '../lib/api/user';
 
 export const useUser = (accessToken: string) => {
   const [user, setUser] = useState<User | null>(null);
@@ -31,4 +31,41 @@ export const useUser = (accessToken: string) => {
   }, []);
 
   return { user, isLoading, error, loadUser };
+};
+
+export const useUpdateUser = () => {
+  const [updatedUser, setUpdatedUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const updateUser = async (
+    firstName: string,
+    lastName: string,
+    accessToken: string,
+  ) => {
+    if (!accessToken) {
+      setError(new Error('Invalid data'));
+      setIsLoading(false);
+      return { success: false, error };
+    }
+
+    try {
+      setIsLoading(true);
+      const user = await updateUserInfo(firstName, lastName, accessToken);
+      setUpdatedUser(user);
+      return { success: true, user };
+    } catch (err) {
+      setError(err as Error);
+      return { success: false, error };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return {
+    updatedUser,
+    updateUser,
+    isLoading,
+    error,
+  };
 };
