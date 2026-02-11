@@ -1,5 +1,3 @@
-import { CreditCard } from 'lucide-react';
-import { Button } from '../../../../../components/ui/button';
 import {
   Card,
   CardContent,
@@ -7,6 +5,7 @@ import {
   CardHeader,
 } from '../../../../../components/ui/card';
 import { formatPrice } from '../../../../../lib/utils/helperFunctions';
+import { AddPaymentDialog } from './add-payment-dialog';
 
 const NextPayment = ({ monthlyRent }: { monthlyRent: number }) => {
   return (
@@ -21,10 +20,7 @@ const NextPayment = ({ monthlyRent }: { monthlyRent: number }) => {
         </span>
       </CardContent>
       <CardFooter className="flex flex-col w-full">
-        <Button className="flex flex-row w-full items-center">
-          <CreditCard />
-          <span>Add payment</span>
-        </Button>
+        <AddPaymentDialog />
       </CardFooter>
     </Card>
   );

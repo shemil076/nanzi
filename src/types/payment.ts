@@ -10,6 +10,7 @@ export interface Payment {
   amount: number;
   proofUrl: string;
   paidAt: Date;
+  dueDate: Date;
   status: PaymentStatus;
 }
 

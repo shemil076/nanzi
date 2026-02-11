@@ -20,11 +20,11 @@ const PaymentComponents = ({ payment }: PaymentComponentsProps) => {
         <div className="w-full flex flex-row  justify-between">
           <div className="flex flex-col gap-1 ">
             <span className="font-semibold">
-              {formatDateForLocal(payment.paidAt)}
+              {formatDateForLocal(payment.dueDate)}
             </span>
 
             <span className="text-xs font-light text-gray-500">
-              Date {formatToShortDate(payment.paidAt)}
+              Due Date {formatToShortDate(payment.dueDate)}
             </span>
           </div>
 
