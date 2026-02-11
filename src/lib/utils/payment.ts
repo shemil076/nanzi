@@ -8,6 +8,7 @@ export const reformatPayment = (data: any): Payment => {
     amount: data.amount,
     proofUrl: data.proofUrl,
     paidAt: new Date(data.paidAt),
+    dueDate: new Date(data.dueDate),
     status: data.status as PaymentStatus,
   };
 

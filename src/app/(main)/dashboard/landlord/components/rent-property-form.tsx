@@ -61,12 +61,13 @@ import { NewTenantInvitation } from '../../../../../types/tenant-invitation';
 
 const rentFormSchema = z.object({
   startDate: z.date(),
-  endDate: z.date().nullable().optional(),
+  endDate: z.date(),
 });
 
 const inviteTenantFormSchema = z.object({
   email: z.string().email('Invalid email format'),
   startDate: z.date(),
+  endDate: z.date(),
 });
 
 type RentFormType = z.infer<typeof rentFormSchema>;
@@ -152,6 +153,7 @@ const RentPropertyForm = ({
         email: values.email,
         propertyId: propertyId,
         startDate: values.startDate,
+        endDate: values.endDate,
       };
 
       const { success } = await sendTenantInvitation(
@@ -311,7 +313,7 @@ const RentPropertyForm = ({
                 }}
                 className="flex flex-col gap-5"
               >
-                <div className="grid grid-cols-2 items-center gap-5">
+                <div className=" items-center gap-5">
                   <FormField
                     control={inviteForm.control}
                     name="email"
@@ -340,43 +342,52 @@ const RentPropertyForm = ({
                       </FormItem>
                     )}
                   />
-
-                  <FormField
-                    control={inviteForm.control}
-                    name="startDate"
-                    render={({ field, fieldState }) => (
-                      <FormItem className="w-full">
-                        <FormLabel>Start Date</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant={'outline'}
-                              className={` ${fieldState.error ? 'border-red-500' : ''}`}
-                            >
-                              {field.value ? (
-                                format(field.value, 'PPP')
-                              ) : (
-                                <span className="text-gray-500">
-                                  Pick a date
-                                </span>
-                              )}
-                              <CalendarIcon
-                                className="mr-2 h-4 w-4"
-                                color="grey"
+                </div>
+                <div className=" w-full flex flex-row gap-5">
+                  {(
+                    [
+                      ['startDate', 'Starting Date'],
+                      ['endDate', 'Ending Date'],
+                    ] as const
+                  ).map(([field, label], index) => (
+                    <FormField
+                      key={index}
+                      control={inviteForm.control}
+                      name={field}
+                      render={({ field, fieldState }) => (
+                        <FormItem className="w-full">
+                          <FormLabel>{label}</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={'outline'}
+                                className={` ${fieldState.error ? 'border-red-500' : ''}`}
+                              >
+                                {field.value ? (
+                                  format(field.value, 'PPP')
+                                ) : (
+                                  <span className="text-gray-500">
+                                    Pick a date
+                                  </span>
+                                )}
+                                <CalendarIcon
+                                  className="mr-2 h-4 w-4"
+                                  color="grey"
+                                />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
                               />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      </FormItem>
-                    )}
-                  />
+                            </PopoverContent>
+                          </Popover>
+                        </FormItem>
+                      )}
+                    />
+                  ))}
                 </div>
 
                 <div className="flex flex-row-reverse">
