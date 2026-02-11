@@ -41,3 +41,21 @@ export const fetchCurrentTenantsPayments = (
       throw err;
     });
 };
+
+export const fetchTenantsCurrentPendingPayment = (
+  accessToken: string,
+  propertyId: string,
+): Promise<Payment> => {
+  return axios
+    .get(`/api/payment/current/${propertyId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      return reformatPayment(res.data);
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
