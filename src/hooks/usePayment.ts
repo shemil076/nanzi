@@ -4,6 +4,7 @@ import {
   fetchCurrentTenantsPayments,
   fetchPaymentsByProperty,
   fetchTenantsCurrentPendingPayment,
+  payEntierPayment,
 } from '../lib/api/payment';
 import { Payment } from '../types/payment';
 
@@ -112,4 +113,39 @@ export const useTenantsCurrentPendingPayment = (
   }, [accessToken, propertyId]);
 
   return { payment, fetchPayment, isLoading, error };
+};
+
+export const usePayFullPayment = () => {
+  const [paidPayment, setPaidPayment] = useState<Payment | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const payFullPayment = async (
+    accessToken: string,
+    paymentId: string,
+    amount: number,
+  ) => {
+    if (!accessToken || !paymentId) {
+      setError(new Error('Invalid data'));
+      setIsLoading(false);
+      return { success: false, error };
+    }
+
+    try {
+      setIsLoading(true);
+      const updatedPayment = await payEntierPayment(
+        accessToken,
+        paymentId,
+        amount,
+      );
+      setPaidPayment(updatedPayment);
+    } catch (err) {
+      setError(err as Error);
+      return { success: false, error };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { payFullPayment, paidPayment, isLoading };
 };

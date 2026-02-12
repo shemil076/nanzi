@@ -59,3 +59,29 @@ export const fetchTenantsCurrentPendingPayment = (
       throw err;
     });
 };
+
+export const payEntierPayment = async (
+  accessToken: string,
+  paymentId: string,
+  amount: number,
+): Promise<Payment> => {
+  return axios
+    .patch(
+      `/api/payment/full-payment`,
+      {
+        paymentId,
+        amount,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    )
+    .then((res) => {
+      return reformatPayment(res.data);
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
