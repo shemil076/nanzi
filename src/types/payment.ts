@@ -12,6 +12,7 @@ export interface Payment {
   paidAt: Date;
   dueDate: Date;
   status: PaymentStatus;
+  createdAt: Date;
 }
 
 export const PaymentStatusVariant: Record<PaymentStatus, string> = {

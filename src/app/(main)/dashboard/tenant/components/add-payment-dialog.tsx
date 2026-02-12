@@ -16,6 +16,7 @@ import {
   TabsTrigger,
 } from '../../../../../components/ui/tabs';
 import { Payment } from '../../../../../types/payment';
+import { FullPaymentContainer } from './full-payment-container';
 
 export function AddPaymentDialog({
   currentPayment,
@@ -50,12 +51,7 @@ export function AddPaymentDialog({
             <TabsTrigger value="installments">Pay as Installments</TabsTrigger>
           </TabsList>
           <TabsContent value="full-payment">
-            <div className="flex flex-col p-5 text-2xl font-bold">
-              <div>
-                Total Amount to pay:{' '}
-                {currentPayment.amount != null ? currentPayment.amount : '00'}
-              </div>
-            </div>
+            <FullPaymentContainer currentPayment={currentPayment} />
           </TabsContent>
           <TabsContent value="installments">
             Change your password here.
