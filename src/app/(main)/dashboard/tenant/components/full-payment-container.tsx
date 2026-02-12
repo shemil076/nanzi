@@ -12,6 +12,10 @@ import {
 } from '../../../../../components/ui/form';
 import { Input } from '../../../../../components/ui/input';
 import { Button } from '../../../../../components/ui/button';
+import { usePayFullPayment } from '../../../../../hooks/usePayment';
+import { useAuth } from '../../../../../hooks/useAuth';
+import { CircleCheckBig, XCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
 const fullPaymentForm = z.object({
   amount: z.coerce.number().min(1),
@@ -21,8 +25,10 @@ type FullPaymentFormType = z.infer<typeof fullPaymentForm>;
 
 export function FullPaymentContainer({
   currentPayment,
+  setIsOpen,
 }: {
   currentPayment: Payment;
+  setIsOpen: (boolean) => void;
 }) {
   const form = useForm<FullPaymentFormType>({
     resolver: zodResolver(fullPaymentForm),
@@ -30,6 +36,33 @@ export function FullPaymentContainer({
       amount: currentPayment.amount,
     },
   });
+
+  const { payFullPayment, paidPayment, isLoading } = usePayFullPayment();
+  const { accessToken } = useAuth();
+
+  const handleOnSubmit = async (values: FullPaymentFormType) => {
+    console.log('=>>> Value', values.amount);
+    if (values.amount) {
+      const { success } = await payFullPayment(
+        accessToken,
+        currentPayment.id,
+        values.amount,
+      );
+
+      if (!success) {
+        toast('Failed to pay the full amount', {
+          icon: <XCircle className="text-red-500" />,
+          className: 'flex items-center justify-center space-x-2',
+        });
+      } else if (success) {
+        toast('Successfully paid the full amount ', {
+          icon: <CircleCheckBig className="text-green-500" />,
+          className: 'flex items-center justify-center gap-5',
+        });
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col p-5">
       <div className="flex flex-row items-center gap-5">
@@ -48,7 +81,6 @@ export function FullPaymentContainer({
             className="flex flex-col gap-5"
           >
             <FormField
-              disabled={true}
               control={form.control}
               name="amount"
               render={({ field }) => (
@@ -56,7 +88,8 @@ export function FullPaymentContainer({
                   <FormLabel>Rental for this month (LKR)</FormLabel>
                   <FormControl>
                     <Input
-                      className="border text-center disabled:text-black disabled:opacity-100 disabled:bg-gray-100 disabled:pointer-events-auto"
+                      readOnly
+                      className="border text-center text-black opacity-100 bg-gray-100  pointer-events-none"
                       {...field}
                       placeholder="ex: tom@mail.com"
                     />
@@ -66,10 +99,15 @@ export function FullPaymentContainer({
             />
 
             <div className="flex flex-col gap-3">
-              <Button onClick={() => {}}>
+              <Button onClick={() => form.handleSubmit(handleOnSubmit)()}>
                 Pay now ( LKR {currentPayment.amount})
               </Button>
-              <Button variant="outline" onClick={() => {}}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsOpen(false);
+                }}
+              >
                 Cancel
               </Button>
             </div>

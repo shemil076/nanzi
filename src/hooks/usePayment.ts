@@ -139,6 +139,7 @@ export const usePayFullPayment = () => {
         amount,
       );
       setPaidPayment(updatedPayment);
+      return { success: true };
     } catch (err) {
       setError(err as Error);
       return { success: false, error };

@@ -51,7 +51,10 @@ export function AddPaymentDialog({
             <TabsTrigger value="installments">Pay as Installments</TabsTrigger>
           </TabsList>
           <TabsContent value="full-payment">
-            <FullPaymentContainer currentPayment={currentPayment} />
+            <FullPaymentContainer
+              currentPayment={currentPayment}
+              setIsOpen={setIsOpen}
+            />
           </TabsContent>
           <TabsContent value="installments">
             Change your password here.

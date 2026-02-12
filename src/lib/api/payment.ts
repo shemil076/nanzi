@@ -65,8 +65,10 @@ export const payEntierPayment = async (
   paymentId: string,
   amount: number,
 ): Promise<Payment> => {
+  console.log('amount:', amount, typeof amount);
+
   return axios
-    .patch(
+    .post(
       `/api/payment/full-payment`,
       {
         paymentId,
@@ -82,6 +84,7 @@ export const payEntierPayment = async (
       return reformatPayment(res.data);
     })
     .catch((err) => {
+      console.log('error => ', err);
       throw err;
     });
 };
