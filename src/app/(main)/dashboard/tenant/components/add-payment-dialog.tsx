@@ -24,10 +24,14 @@ export function AddPaymentDialog({
   currentPayment: Payment;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const isPaymentPaid = currentPayment.status === 'PAID';
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="flex flex-row w-full items-center">
+        <Button
+          className="flex flex-row w-full items-center"
+          disabled={isPaymentPaid}
+        >
           <CreditCard />
           <span>Add payment</span>
         </Button>
