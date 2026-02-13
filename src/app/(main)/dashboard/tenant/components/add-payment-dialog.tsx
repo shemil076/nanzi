@@ -15,13 +15,23 @@ import {
   TabsList,
   TabsTrigger,
 } from '../../../../../components/ui/tabs';
+import { Payment } from '../../../../../types/payment';
+import { FullPaymentContainer } from './full-payment-container';
 
-export function AddPaymentDialog() {
+export function AddPaymentDialog({
+  currentPayment,
+}: {
+  currentPayment: Payment;
+}) {
   const [isOpen, setIsOpen] = useState(false);
+  const isPaymentPaid = currentPayment.status === 'PAID';
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="flex flex-row w-full items-center">
+        <Button
+          className="flex flex-row w-full items-center"
+          disabled={isPaymentPaid}
+        >
           <CreditCard />
           <span>Add payment</span>
         </Button>
@@ -39,16 +49,16 @@ export function AddPaymentDialog() {
           <DialogDescription />
         </DialogHeader>
 
-        <Tabs
-          defaultValue="full-payment"
-          className="flex flex-col items-center"
-        >
+        <Tabs defaultValue="full-payment">
           <TabsList>
-            <TabsTrigger value="full-payment">Pay the Full amount</TabsTrigger>
+            <TabsTrigger value="full-payment">Pay the Full Amount</TabsTrigger>
             <TabsTrigger value="installments">Pay as Installments</TabsTrigger>
           </TabsList>
           <TabsContent value="full-payment">
-            Make changes to your account here.
+            <FullPaymentContainer
+              currentPayment={currentPayment}
+              setIsOpen={setIsOpen}
+            />
           </TabsContent>
           <TabsContent value="installments">
             Change your password here.

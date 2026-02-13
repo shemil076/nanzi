@@ -41,3 +41,50 @@ export const fetchCurrentTenantsPayments = (
       throw err;
     });
 };
+
+export const fetchTenantsCurrentPendingPayment = (
+  accessToken: string,
+  propertyId: string,
+): Promise<Payment> => {
+  return axios
+    .get(`/api/payment/current/${propertyId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      return reformatPayment(res.data);
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
+
+export const payEntierPayment = async (
+  accessToken: string,
+  paymentId: string,
+  amount: number,
+): Promise<Payment> => {
+  console.log('amount:', amount, typeof amount);
+
+  return axios
+    .post(
+      `/api/payment/full-payment`,
+      {
+        paymentId,
+        amount,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    )
+    .then((res) => {
+      return reformatPayment(res.data);
+    })
+    .catch((err) => {
+      console.log('error => ', err);
+      throw err;
+    });
+};

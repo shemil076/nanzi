@@ -59,7 +59,7 @@ const ParentContainer = () => {
         </div>
         <div className="grid grid-cols-1 gap-5">
           <div>
-            <NextPayment monthlyRent={tenantsResidence?.price} />
+            <NextPayment propertyId={tenantsResidence.id} />
           </div>
           <div>
             <MaintenanceContextProvider propertyId={tenantsResidence?.id}>

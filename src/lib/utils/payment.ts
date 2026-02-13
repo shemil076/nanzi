@@ -10,6 +10,7 @@ export const reformatPayment = (data: any): Payment => {
     paidAt: new Date(data.paidAt),
     dueDate: new Date(data.dueDate),
     status: data.status as PaymentStatus,
+    createdAt: new Date(data.createdAt),
   };
 
   return formattedPayment;
