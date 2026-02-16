@@ -43,7 +43,7 @@ export function AddPaymentDialog({
     },
   });
 
-  const { payFullPayment, paidPayment, isLoading } = usePayFullPayment();
+  const { payFullPayment } = usePayFullPayment();
   const { accessToken } = useAuth();
 
   const handleOnSubmit = async (values: FullPaymentFormType) => {
@@ -109,7 +109,10 @@ export function AddPaymentDialog({
             />
           </TabsContent>
           <TabsContent value="installments">
-            <InstallmentPaymentContainer form={form} />
+            <InstallmentPaymentContainer
+              form={form}
+              currentPayment={currentPayment}
+            />
           </TabsContent>
         </Tabs>
       </DialogContent>
