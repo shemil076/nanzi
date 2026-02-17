@@ -1,10 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import {
+  deleteInstallmentAndUpdatePayment,
   fetchCurrentTenantsPayments,
   fetchPaymentsByProperty,
   fetchTenantsCurrentPendingPayment,
   payEntierPayment,
+  payInstallment,
 } from '../lib/api/payment';
 import { Payment } from '../types/payment';
 
@@ -149,4 +151,76 @@ export const usePayFullPayment = () => {
   };
 
   return { payFullPayment, paidPayment, isLoading };
+};
+
+export const usePayInstallment = () => {
+  const [paidPayment, setPaidPayment] = useState<Payment | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const payInstallmentPayment = async (
+    accessToken: string,
+    paymentId: string,
+    amount: number,
+  ) => {
+    if (!accessToken || !paymentId) {
+      setError(new Error('Invalid data'));
+      setIsLoading(false);
+      return { success: false, error };
+    }
+
+    try {
+      setIsLoading(true);
+      const updatedPayment = await payInstallment(
+        accessToken,
+        paymentId,
+        amount,
+      );
+      setPaidPayment(updatedPayment);
+      return { success: true };
+    } catch (err) {
+      setError(err as Error);
+      return { success: false, error };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { payInstallmentPayment, paidPayment, isLoading };
+};
+
+export const useDeleteInstallment = () => {
+  const [updatedPayment, setUpdatedPayment] = useState<Payment | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const deleteInstallment = async (
+    accessToken: string,
+    paymentId: string,
+    installmentId: string,
+  ) => {
+    if (!accessToken || !paymentId || !installmentId) {
+      setError(new Error('Invalid data'));
+      setIsLoading(false);
+      return { success: false, error };
+    }
+
+    try {
+      setIsLoading(true);
+      const updatedPayment = await deleteInstallmentAndUpdatePayment(
+        accessToken,
+        paymentId,
+        installmentId,
+      );
+      setUpdatedPayment(updatedPayment);
+      return { success: true };
+    } catch (err) {
+      setError(err as Error);
+      return { success: false, error };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { deleteInstallment, updatedPayment, isLoading };
 };

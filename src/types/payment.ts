@@ -1,8 +1,11 @@
+// import { Installment } from "./installment";
+
 export enum PaymentStatus {
   PENDING = 'PENDING',
   APPROVED = 'APPROVED',
   REJECTED = 'REJECTED',
   PAID = 'PAID',
+  PARTIAL = 'PARTIAL',
 }
 
 export interface Payment {
@@ -14,6 +17,7 @@ export interface Payment {
   dueDate: Date;
   status: PaymentStatus;
   createdAt: Date;
+  // installments: Installment[];
 }
 
 export const PaymentStatusVariant: Record<PaymentStatus, string> = {
@@ -21,4 +25,5 @@ export const PaymentStatusVariant: Record<PaymentStatus, string> = {
   [PaymentStatus.APPROVED]: 'default',
   [PaymentStatus.REJECTED]: 'destructive',
   [PaymentStatus.PAID]: 'paid',
+  [PaymentStatus.PARTIAL]: 'partial',
 };
