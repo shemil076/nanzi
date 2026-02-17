@@ -65,7 +65,7 @@ export function InstallmentPaymentContainer({ form, currentPayment }: Props) {
         </Form>
         <Button onClick={() => addInstallment()}>+ Add an Installment</Button>
 
-        <ScrollArea className="h-[250px] flex flex-col gap-3">
+        <ScrollArea className="h-[150px] flex flex-col gap-3">
           {installments &&
             installments.map((installment, index) => {
               return (
