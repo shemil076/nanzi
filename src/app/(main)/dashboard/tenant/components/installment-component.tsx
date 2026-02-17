@@ -19,6 +19,7 @@ import {
 import { usePayInstallment } from '../../../../../hooks/usePayment';
 import { toast } from 'sonner';
 import { useAuth } from '../../../../../hooks/useAuth';
+import { formatToShortDate } from '../../../../../lib/utils/helperFunctions';
 
 const installmentComponentForm = z.object({
   amount: z.coerce.number().min(1),
@@ -45,6 +46,8 @@ export function InstallmentComponent({
   const { accessToken } = useAuth();
 
   const { payInstallmentPayment } = usePayInstallment();
+
+  const isPaid = installment.status === InstallmentStatus.PAID;
 
   const handleOnSubmit = async (values: InstallmentComponentFormType) => {
     if (values.amount) {
@@ -86,10 +89,12 @@ export function InstallmentComponent({
                 name="amount"
                 render={({ field }) => (
                   <FormItem className="flex sm:flex-col md:flex-row">
-                    <FormLabel>Amount</FormLabel>
+                    <FormLabel>Amount (LKR)</FormLabel>
                     <FormControl>
                       <Input
-                        className="border text-center"
+                        disabled={isPaid}
+                        // readOnly={isReadOnly}
+                        className="border text-center disabled:text-black disabled:opacity-100 disabled:bg-gray-100 disabled:pointer-events-auto"
                         {...field}
                         placeholder="ex: 2000"
                       />
@@ -97,6 +102,15 @@ export function InstallmentComponent({
                   </FormItem>
                 )}
               />
+
+              {isPaid && (
+                <div className="w-1/2 flex flex-row items-center gap-5">
+                  <div className="text-sm font-medium">Paid On</div>
+                  <span className="w-1/2 border rounded-md p-1 text-center text-black opacity-100 bg-gray-100 pointer-events-auto">
+                    {formatToShortDate(new Date(installment.paidAt))}
+                  </span>
+                </div>
+              )}
               <Button
                 variant={'outline'}
                 onClick={() => form.handleSubmit(handleOnSubmit)()}

@@ -3,6 +3,7 @@ export enum PaymentStatus {
   APPROVED = 'APPROVED',
   REJECTED = 'REJECTED',
   PAID = 'PAID',
+  PARTIAL = 'PARTIAL',
 }
 
 export interface Payment {
@@ -21,4 +22,5 @@ export const PaymentStatusVariant: Record<PaymentStatus, string> = {
   [PaymentStatus.APPROVED]: 'default',
   [PaymentStatus.REJECTED]: 'destructive',
   [PaymentStatus.PAID]: 'paid',
+  [PaymentStatus.PARTIAL]: 'partial',
 };
