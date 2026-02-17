@@ -16,7 +16,10 @@ import {
   Installment,
   InstallmentStatus,
 } from '../../../../../types/installment';
-import { usePayInstallment } from '../../../../../hooks/usePayment';
+import {
+  useDeleteInstallment,
+  usePayInstallment,
+} from '../../../../../hooks/usePayment';
 import { toast } from 'sonner';
 import { useAuth } from '../../../../../hooks/useAuth';
 import { formatToShortDate } from '../../../../../lib/utils/helperFunctions';
@@ -47,6 +50,7 @@ export function InstallmentComponent({
   const { accessToken } = useAuth();
 
   const { payInstallmentPayment } = usePayInstallment();
+  const { deleteInstallment } = useDeleteInstallment();
 
   const isPaid = installment.status === InstallmentStatus.PAID;
 
@@ -59,12 +63,36 @@ export function InstallmentComponent({
       );
 
       if (!success) {
-        toast('Failed to pay the full amount', {
+        toast('Failed to pay the installment', {
           icon: <XCircle className="text-red-500" />,
           className: 'flex items-center justify-center space-x-2',
         });
       } else if (success) {
-        toast('Successfully paid the full amount ', {
+        toast('Successfully paid the installment', {
+          icon: <CircleCheckBig className="text-green-500" />,
+          className: 'flex items-center justify-center gap-5',
+        });
+
+        await loadInstallments();
+      }
+    }
+  };
+
+  const handelOnDeleteInstallment = async () => {
+    if (isPaid && installment.id) {
+      const { success } = await deleteInstallment(
+        accessToken,
+        installment.paymentId,
+        installment.id,
+      );
+
+      if (!success) {
+        toast('Failed to delete the installment', {
+          icon: <XCircle className="text-red-500" />,
+          className: 'flex items-center justify-center space-x-2',
+        });
+      } else if (success) {
+        toast('Successfully deleted the installment', {
           icon: <CircleCheckBig className="text-green-500" />,
           className: 'flex items-center justify-center gap-5',
         });
@@ -114,7 +142,9 @@ export function InstallmentComponent({
               )}
 
               {isPaid ? (
-                <PaymentDeleteAlert />
+                <PaymentDeleteAlert
+                  handelOnDeleteInstallment={handelOnDeleteInstallment}
+                />
               ) : (
                 <Button
                   variant={'outline'}

@@ -12,7 +12,11 @@ import {
 } from '../../../../../components/ui/alert-dialog';
 import { Button } from '../../../../../components/ui/button';
 
-export function PaymentDeleteAlert() {
+export function PaymentDeleteAlert({
+  handelOnDeleteInstallment,
+}: {
+  handelOnDeleteInstallment: () => Promise<void>;
+}) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -30,7 +34,9 @@ export function PaymentDeleteAlert() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={() => handelOnDeleteInstallment()}>
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
