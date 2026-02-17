@@ -6,10 +6,13 @@ import { MonthlyRentContainer } from './monthly-rent-container';
 import { InstallmentComponent } from './installment-component';
 import { Payment } from '../../../../../types/payment';
 import { Button } from '../../../../../components/ui/button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useInstallments } from '../../../../../hooks/use-intallment';
 import { useAuth } from '../../../../../hooks/useAuth';
-import { Installment } from '../../../../../types/installment';
+import {
+  Installment,
+  InstallmentStatus,
+} from '../../../../../types/installment';
 
 type Props = {
   currentPayment: Payment;
@@ -20,16 +23,16 @@ type Props = {
 
 export function InstallmentPaymentContainer({ form, currentPayment }: Props) {
   const { accessToken } = useAuth();
-  const {
-    installments: fetchedInstallments,
-    loadInstallments,
-    isLoading,
-    error,
-  } = useInstallments(accessToken, currentPayment.id);
+  const { installments: fetchedInstallments, loadInstallments } =
+    useInstallments(accessToken, currentPayment.id);
 
   const [installments, setInstallment] = useState<Installment[] | null>(
     fetchedInstallments,
   );
+
+  useEffect(() => {
+    setInstallment(fetchedInstallments);
+  }, [fetchedInstallments, setInstallment]);
 
   const addInstallment = () => {
     setInstallment((prev) => {
@@ -41,6 +44,7 @@ export function InstallmentPaymentContainer({ form, currentPayment }: Props) {
           id: '',
           amount: 0,
           paymentId: currentPayment.id,
+          status: InstallmentStatus.PENDING,
         },
       ];
     });
@@ -60,9 +64,16 @@ export function InstallmentPaymentContainer({ form, currentPayment }: Props) {
         </Form>
         <Button onClick={() => addInstallment()}>+ Add an Installment</Button>
 
-        {installments && (
-          <InstallmentComponent currentPayment={currentPayment} />
-        )}
+        {installments &&
+          installments.map((installment, index) => {
+            return (
+              <InstallmentComponent
+                key={index}
+                installment={installment}
+                loadInstallments={loadInstallments}
+              />
+            );
+          })}
       </div>
     </div>
   );

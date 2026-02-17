@@ -88,3 +88,30 @@ export const payEntierPayment = async (
       throw err;
     });
 };
+
+export const payInstallment = async (
+  accessToken: string,
+  paymentId: string,
+  amount: number,
+): Promise<Payment> => {
+  return axios
+    .post(
+      `/api/payment/installment`,
+      {
+        paymentId,
+        amount,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    )
+    .then((res) => {
+      return reformatPayment(res.data);
+    })
+    .catch((err) => {
+      console.log('error => ', err);
+      throw err;
+    });
+};

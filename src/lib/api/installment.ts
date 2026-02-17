@@ -7,7 +7,7 @@ export const fetchInstallmentsByPayment = (
   paymentId: string,
 ): Promise<Installment[]> => {
   return axios
-    .get(`/api/installment/${paymentId}`, {
+    .get(`/api/installment/all/${paymentId}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

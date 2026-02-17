@@ -1,4 +1,4 @@
-import { Installment } from '../../types/installment';
+import { Installment, InstallmentStatus } from '../../types/installment';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const reformatInstallment = (data: any): Installment => {
@@ -9,6 +9,7 @@ export const reformatInstallment = (data: any): Installment => {
     paidAt: data.paidAt,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
+    status: data.status as InstallmentStatus,
   };
 
   return formattedInstallment;

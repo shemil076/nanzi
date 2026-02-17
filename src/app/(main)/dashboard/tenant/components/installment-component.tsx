@@ -1,8 +1,7 @@
-import { Check } from 'lucide-react';
+import { Check, CircleCheckBig, XCircle } from 'lucide-react';
 import { Button } from '../../../../../components/ui/button';
 import { Card, CardContent } from '../../../../../components/ui/card';
 import z from 'zod';
-import { Payment } from '../../../../../types/payment';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import {
@@ -13,7 +12,13 @@ import {
   FormLabel,
 } from '../../../../../components/ui/form';
 import { Input } from '../../../../../components/ui/input';
-import { Installment } from '../../../../../types/installment';
+import {
+  Installment,
+  InstallmentStatus,
+} from '../../../../../types/installment';
+import { usePayInstallment } from '../../../../../hooks/usePayment';
+import { toast } from 'sonner';
+import { useAuth } from '../../../../../hooks/useAuth';
 
 const installmentComponentForm = z.object({
   amount: z.coerce.number().min(1),
@@ -22,18 +27,49 @@ const installmentComponentForm = z.object({
 type InstallmentComponentFormType = z.infer<typeof installmentComponentForm>;
 
 export function InstallmentComponent({
-  currentPayment,
   installment,
+  loadInstallments,
 }: {
-  currentPayment: Payment;
-  installment?: Installment;
+  installment: Installment;
+  loadInstallments: () => Promise<void>;
 }) {
   const form = useForm<InstallmentComponentFormType>({
     resolver: zodResolver(installmentComponentForm),
     defaultValues: {
-      amount: 0,
+      amount:
+        installment.status == InstallmentStatus.PENDING
+          ? 0
+          : installment.amount,
     },
   });
+  const { accessToken } = useAuth();
+
+  const { payInstallmentPayment } = usePayInstallment();
+
+  const handleOnSubmit = async (values: InstallmentComponentFormType) => {
+    if (values.amount) {
+      const { success } = await payInstallmentPayment(
+        accessToken,
+        installment.paymentId,
+        values.amount,
+      );
+
+      if (!success) {
+        toast('Failed to pay the full amount', {
+          icon: <XCircle className="text-red-500" />,
+          className: 'flex items-center justify-center space-x-2',
+        });
+      } else if (success) {
+        toast('Successfully paid the full amount ', {
+          icon: <CircleCheckBig className="text-green-500" />,
+          className: 'flex items-center justify-center gap-5',
+        });
+
+        await loadInstallments();
+      }
+    }
+  };
+
   return (
     <Card className="p-2">
       <CardContent className="flex flex-row gap-4">
@@ -61,7 +97,10 @@ export function InstallmentComponent({
                   </FormItem>
                 )}
               />
-              <Button variant={'outline'}>
+              <Button
+                variant={'outline'}
+                onClick={() => form.handleSubmit(handleOnSubmit)()}
+              >
                 <Check color="green" />
               </Button>
             </form>
