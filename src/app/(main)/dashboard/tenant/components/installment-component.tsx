@@ -20,6 +20,7 @@ import { usePayInstallment } from '../../../../../hooks/usePayment';
 import { toast } from 'sonner';
 import { useAuth } from '../../../../../hooks/useAuth';
 import { formatToShortDate } from '../../../../../lib/utils/helperFunctions';
+import { PaymentDeleteAlert } from './payment-delete-alert';
 
 const installmentComponentForm = z.object({
   amount: z.coerce.number().min(1),
@@ -74,7 +75,7 @@ export function InstallmentComponent({
   };
 
   return (
-    <Card className="p-2">
+    <Card className={`p-2 m-2 ${!isPaid && 'border-emerald-300'}`}>
       <CardContent className="flex flex-row gap-4">
         <div className="w-full">
           <Form {...form}>
@@ -104,19 +105,24 @@ export function InstallmentComponent({
               />
 
               {isPaid && (
-                <div className="w-1/2 flex flex-row items-center gap-5">
+                <div className="w-1/3 flex flex-row items-center gap-5">
                   <div className="text-sm font-medium">Paid On</div>
                   <span className="w-1/2 border rounded-md p-1 text-center text-black opacity-100 bg-gray-100 pointer-events-auto">
                     {formatToShortDate(new Date(installment.paidAt))}
                   </span>
                 </div>
               )}
-              <Button
-                variant={'outline'}
-                onClick={() => form.handleSubmit(handleOnSubmit)()}
-              >
-                <Check color="green" />
-              </Button>
+
+              {isPaid ? (
+                <PaymentDeleteAlert />
+              ) : (
+                <Button
+                  variant={'outline'}
+                  onClick={() => form.handleSubmit(handleOnSubmit)()}
+                >
+                  <Check color="green" />
+                </Button>
+              )}
             </form>
           </Form>
         </div>

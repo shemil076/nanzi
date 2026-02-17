@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import {
+  deleteInstallmentAndUpdatePayment,
   fetchCurrentTenantsPayments,
   fetchPaymentsByProperty,
   fetchTenantsCurrentPendingPayment,
@@ -186,4 +187,40 @@ export const usePayInstallment = () => {
   };
 
   return { payInstallmentPayment, paidPayment, isLoading };
+};
+
+export const useDeleteInstallment = () => {
+  const [updatedPayment, setUpdatedPayment] = useState<Payment | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const deleteInstallment = async (
+    accessToken: string,
+    paymentId: string,
+    installmentId: string,
+  ) => {
+    if (!accessToken || !paymentId || !installmentId) {
+      setError(new Error('Invalid data'));
+      setIsLoading(false);
+      return { success: false, error };
+    }
+
+    try {
+      setIsLoading(true);
+      const updatedPayment = await deleteInstallmentAndUpdatePayment(
+        accessToken,
+        paymentId,
+        installmentId,
+      );
+      setUpdatedPayment(updatedPayment);
+      return { success: true };
+    } catch (err) {
+      setError(err as Error);
+      return { success: false, error };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { deleteInstallment, updatedPayment, isLoading };
 };

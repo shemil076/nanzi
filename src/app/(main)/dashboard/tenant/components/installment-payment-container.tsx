@@ -13,6 +13,7 @@ import {
   Installment,
   InstallmentStatus,
 } from '../../../../../types/installment';
+import { ScrollArea } from '../../../../../components/ui/scroll-area';
 
 type Props = {
   currentPayment: Payment;
@@ -64,16 +65,18 @@ export function InstallmentPaymentContainer({ form, currentPayment }: Props) {
         </Form>
         <Button onClick={() => addInstallment()}>+ Add an Installment</Button>
 
-        {installments &&
-          installments.map((installment, index) => {
-            return (
-              <InstallmentComponent
-                key={index}
-                installment={installment}
-                loadInstallments={loadInstallments}
-              />
-            );
-          })}
+        <ScrollArea className="h-[250px] flex flex-col gap-3">
+          {installments &&
+            installments.map((installment, index) => {
+              return (
+                <InstallmentComponent
+                  key={index}
+                  installment={installment}
+                  loadInstallments={loadInstallments}
+                />
+              );
+            })}
+        </ScrollArea>
       </div>
     </div>
   );

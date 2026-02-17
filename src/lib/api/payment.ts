@@ -115,3 +115,24 @@ export const payInstallment = async (
       throw err;
     });
 };
+
+export const deleteInstallmentAndUpdatePayment = (
+  accessToken: string,
+  paymentId: string,
+  installmentId: string,
+): Promise<Payment> => {
+  return axios
+    .delete(`/api/payment/${paymentId}/installment/${installmentId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      console.log('payment => ', res.data);
+      return reformatPayment(res.data);
+    })
+    .catch((err) => {
+      console.log('error => ', err);
+      throw err;
+    });
+};

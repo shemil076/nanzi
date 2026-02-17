@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Payment, PaymentStatus } from '../../types/payment';
+// import { reformatInstallment } from './installment';
 
 export const reformatPayment = (data: any): Payment => {
   const formattedPayment: Payment = {
@@ -11,6 +12,7 @@ export const reformatPayment = (data: any): Payment => {
     dueDate: new Date(data.dueDate),
     status: data.status as PaymentStatus,
     createdAt: new Date(data.createdAt),
+    // installments: data.installment.map((item) => reformatInstallment(item)),
   };
 
   return formattedPayment;
