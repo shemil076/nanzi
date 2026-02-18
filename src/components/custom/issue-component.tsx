@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader } from '../ui/card';
 import {
+  Ai_MaintenanceCategoryLabels,
   Issue,
   IssuePriorityLabels,
   IssuePriorityVariant,
@@ -30,6 +31,11 @@ const IssueComponent = ({ issue }: IssueComponentProp) => {
             <Badge variant={IssueStatusVariant[issue.status]}>
               {IssueStatusLabels[issue.status]}
             </Badge>
+            {issue.ai_category && (
+              <Badge variant={'outline'}>
+                {Ai_MaintenanceCategoryLabels[issue.ai_category]}
+              </Badge>
+            )}
           </div>
         </div>
       </CardHeader>
