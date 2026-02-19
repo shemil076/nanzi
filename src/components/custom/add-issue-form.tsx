@@ -33,6 +33,7 @@ import {
 } from '../ui/select';
 import { useCreateIssue } from '../../hooks/useIssue';
 import { toast } from 'sonner';
+import { Spinner } from '../ui/spinner';
 
 const issueForm = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters long'),
@@ -49,7 +50,7 @@ interface AddIssueFormProps {
 const AddIssueForm = ({ propertyId, loadIssues }: AddIssueFormProps) => {
   const { accessToken } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const { addIssue } = useCreateIssue();
+  const { addIssue, isLoading } = useCreateIssue();
 
   const form = useForm<IssueFormData>({
     resolver: zodResolver(issueForm),
@@ -181,10 +182,11 @@ const AddIssueForm = ({ propertyId, loadIssues }: AddIssueFormProps) => {
             </div>
             <DialogFooter>
               <Button
+                disabled={isLoading}
                 type="submit"
                 onClick={() => form.handleSubmit(handleOnSubmit)()}
               >
-                Submit
+                {isLoading ? <Spinner /> : <>Submit</>}
               </Button>
             </DialogFooter>
           </DialogContent>
