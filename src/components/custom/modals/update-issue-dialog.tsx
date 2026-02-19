@@ -74,7 +74,6 @@ const UpdateIssueModal = ({ issue }: { issue: Issue }) => {
       <DialogTrigger asChild>
         <Button variant="outline" className="flex flex-row items-center">
           <Pencil />
-          <span>Update</span>
         </Button>
       </DialogTrigger>
 

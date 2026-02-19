@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader } from '../ui/card';
 import {
+  Ai_MaintenanceCategoryLabels,
   Issue,
   IssuePriorityLabels,
   IssuePriorityVariant,
@@ -9,6 +10,7 @@ import {
 import { formatToShortDate } from '../../lib/utils/helperFunctions';
 import { Badge } from '../ui/badge';
 import UpdateIssueModal from './modals/update-issue-dialog';
+import { IssueInfoDialog } from './modals/issue-info-dialog';
 
 interface IssueComponentProp {
   issue: Issue;
@@ -24,6 +26,17 @@ const IssueComponent = ({ issue }: IssueComponentProp) => {
             <span className="text-xs font-light text-gray-500">
               Reported at {formatToShortDate(issue.reportedAt)}
             </span>
+
+            {issue.ai_category && (
+              <div className="flex flex-row items-center gap-2">
+                <span className="text-xs font-light text-gray-500">
+                  Category
+                </span>
+                <Badge variant={'outline'}>
+                  {Ai_MaintenanceCategoryLabels[issue.ai_category]}
+                </Badge>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col gap-1 items-center">
@@ -42,8 +55,10 @@ const IssueComponent = ({ issue }: IssueComponentProp) => {
           </Badge>
         </div>
 
-        <div>
+        <div className="flex flex-row gap-1">
           <UpdateIssueModal issue={issue} />
+
+          <IssueInfoDialog issue={issue} />
         </div>
       </CardContent>
     </Card>
