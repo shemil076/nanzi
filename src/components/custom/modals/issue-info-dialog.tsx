@@ -11,6 +11,7 @@ import {
 } from '../../ui/dialog';
 import {
   Ai_MaintenanceCategoryLabels,
+  Ai_MaintenanceUrgencyLevelLabels,
   Issue,
   IssueStatusLabels,
   IssueStatusVariant,
@@ -59,6 +60,20 @@ export function IssueInfoDialog({ issue }: { issue: Issue }) {
               <div>
                 <Badge variant="outline">
                   {Ai_MaintenanceCategoryLabels[issue.ai_category]}
+                </Badge>
+              </div>
+            </div>
+          )}
+
+          {issue.ai_urgency && (
+            <div className="grid grid-cols-[auto_1fr] items-start gap-1">
+              <div className=" text-md font-light text-gray-500">
+                Urgency Level:
+              </div>
+
+              <div>
+                <Badge variant="outline">
+                  {Ai_MaintenanceUrgencyLevelLabels[issue.ai_urgency]}
                 </Badge>
               </div>
             </div>
