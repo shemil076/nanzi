@@ -28,14 +28,14 @@ export function ChatWithAIModal() {
       <DialogTrigger asChild>
         <Button className="flex flex-row items-center">
           <div className="flex flex-row gap-2 items-center">
-            <BotMessageSquare /> Ask AI
+            <BotMessageSquare /> Ask nanzi AI
           </div>
         </Button>
       </DialogTrigger>
 
       <DialogContent className="md:max-w-[900px] h-[80vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle>NANZI-AI</DialogTitle>
+          <DialogTitle>nanzi AI</DialogTitle>
           <DialogDescription />
         </DialogHeader>
 
@@ -54,7 +54,7 @@ export function ChatWithAIModal() {
         </div>
 
         <DialogFooter>
-          <div className="text-xs">Powered by AI</div>
+          <div className="text-xs">Powered by nanzi AI</div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
