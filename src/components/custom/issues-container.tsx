@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader } from '../ui/card';
 import { Skeleton } from '../ui/skeleton';
 import AddIssueForm from './add-issue-form';
 import IssueList from './issue-list';
+import { ChatWithAIModal } from './modals/chat-with-ai-modal';
 
 interface IssuesContentProps {
   propertyId: string;
@@ -42,7 +43,8 @@ const IssuesContent = ({ propertyId, isTenant }: IssuesContentProps) => {
         </div>
 
         {isTenant && (
-          <div>
+          <div className="flex flex-row gap-2">
+            <ChatWithAIModal />
             <AddIssueForm propertyId={propertyId} loadIssues={loadIssues} />
           </div>
         )}
