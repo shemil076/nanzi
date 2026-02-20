@@ -7,10 +7,21 @@ export const useChatWithAi = () => {
   const eventSourceRef = useRef<EventSource | null>(null);
 
   const connect = (input: string) => {
-    // Close previous connection if exists
     eventSourceRef.current?.close();
 
-    // Connect to NestJS endpoint
+    const userMessage: Message = {
+      id: crypto.randomUUID(),
+      role: 'user',
+      content: input,
+    };
+    const assistantMessageId = crypto.randomUUID();
+
+    setMessages((prev) => [
+      ...prev,
+      userMessage,
+      { id: assistantMessageId, role: 'assistant', content: '' },
+    ]);
+
     const es = new EventSource(
       `http://localhost:5001/api/chat/stream?message=${encodeURIComponent(input)}`,
     );
@@ -18,18 +29,23 @@ export const useChatWithAi = () => {
     setIsStreaming(true);
 
     es.onmessage = (event) => {
+      if (event.data === '[DONE]') {
+        setIsStreaming(false);
+        es.close();
+        return;
+      }
+
       try {
         const data = JSON.parse(event.data);
+        const chunk: string = data.content ?? data.delta ?? data;
 
-        // Check for NestJS end-of-stream signal
-        if (event.data === '[DONE]') {
-          setIsStreaming(false);
-          es.close();
-          return;
-        }
-
-        // Append AI message to state
-        setMessages((prev) => [...prev, data]);
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantMessageId
+              ? { ...msg, content: msg.content + chunk }
+              : msg,
+          ),
+        );
       } catch (err) {
         console.error('Error parsing SSE message:', err);
       }
