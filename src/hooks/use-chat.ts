@@ -52,9 +52,17 @@ export const useChatWithAi = () => {
     };
 
     es.onerror = (err) => {
-      console.error('SSE error:', err);
-      setIsStreaming(false);
-      es.close();
+      if (es.readyState === EventSource.CLOSED) {
+        setIsStreaming(false);
+      } else if (es.readyState === EventSource.CONNECTING) {
+        console.log('Server closed connection, preventing auto-reconnect.');
+        es.close();
+        setIsStreaming(false);
+      } else {
+        console.error('Actual SSE Error:', err);
+        es.close();
+        setIsStreaming(false);
+      }
     };
 
     eventSourceRef.current = es;
