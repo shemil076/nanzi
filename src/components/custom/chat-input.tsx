@@ -1,15 +1,20 @@
 'use client';
 
 import { useState } from 'react';
+import { Button } from '../ui/button';
 
 export default function ChatInput({
   handleSend,
   isStreaming,
   disconnect,
+  isLoadingInitialization,
+  conversationId,
 }: {
   handleSend: (input: string) => void;
   isStreaming: boolean;
   disconnect: () => void;
+  isLoadingInitialization: boolean;
+  conversationId: string;
 }) {
   const [input, setInput] = useState('');
 
@@ -20,7 +25,7 @@ export default function ChatInput({
   };
 
   return (
-    <div className="flex gap-2 mt-4">
+    <div className="flex gap-2 mt-4 items-center">
       <input
         className="flex-1 border rounded p-2"
         value={input}
@@ -31,12 +36,12 @@ export default function ChatInput({
         placeholder="Type a message..."
       />
 
-      <button
-        className="px-4 py-2 bg-blue-500 text-white rounded"
+      <Button
         onClick={isStreaming ? disconnect : onSendClick}
+        disabled={isLoadingInitialization || !conversationId}
       >
         {isStreaming ? 'Stop' : 'Send'}
-      </button>
+      </Button>
     </div>
   );
 }

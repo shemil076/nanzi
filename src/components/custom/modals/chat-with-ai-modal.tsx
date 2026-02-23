@@ -13,20 +13,48 @@ import {
 } from '../../ui/dialog';
 import ChatWindow from '../chat-window';
 import ChatInput from '../chat-input';
-import { useChatWithAi } from '../../../hooks/use-chat';
+import { useChatInitialization, useChatWithAi } from '../../../hooks/use-chat';
+import { useAuth } from '../../../hooks/useAuth';
+import { useState } from 'react';
 
 export function ChatWithAIModal() {
   const { messages, isStreaming, connect, disconnect } = useChatWithAi();
+  const { accessToken } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const {
+    conversationId,
+    initializeConversation,
+    isLoading: isLoadingInitialization,
+    // error,
+  } = useChatInitialization();
 
   const handleSend = (input: string) => {
+    // console.log('conversationId =>, ', conversationId);
     if (!input.trim()) return;
-    connect(input);
+    connect(input, accessToken);
+  };
+
+  const onTapAskAi = async () => {
+    if (accessToken) {
+      await initializeConversation(accessToken);
+    }
+
+    console.log('conversationId =>, ', conversationId);
+  };
+
+  const handleInitiateChat = () => {
+    onTapAskAi();
+    setIsOpen(true);
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="flex flex-row items-center">
+        <Button
+          className="flex flex-row items-center"
+          onClick={handleInitiateChat}
+        >
           <div className="flex flex-row gap-2 items-center">
             <BotMessageSquare /> Ask nanzi AI
           </div>
@@ -41,7 +69,11 @@ export function ChatWithAIModal() {
 
         <div className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 overflow-y-auto p-4">
-            <ChatWindow messages={messages} loading={isStreaming} />
+            <ChatWindow
+              messages={messages}
+              isStreaming={isStreaming}
+              isLoadingInitialization={isLoadingInitialization}
+            />
           </div>
 
           <div className="border-t p-3">
@@ -49,6 +81,8 @@ export function ChatWithAIModal() {
               handleSend={handleSend}
               isStreaming={isStreaming}
               disconnect={disconnect}
+              isLoadingInitialization={isLoadingInitialization}
+              conversationId={conversationId}
             />
           </div>
         </div>

@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { Message } from '../types/message';
+import { chatInitialization } from '../lib/api/chat';
 
 export const useChatWithAi = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
-  const eventSourceRef = useRef<EventSource | null>(null);
+  const controllerRef = useRef<AbortController | null>(null);
 
-  const connect = (input: string) => {
-    eventSourceRef.current?.close();
+  const connect = async (input: string, accessToken: string) => {
+    controllerRef.current?.abort();
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
@@ -22,54 +23,73 @@ export const useChatWithAi = () => {
       { id: assistantMessageId, role: 'assistant', content: '' },
     ]);
 
-    const es = new EventSource(
-      `http://localhost:5001/api/chat/stream?message=${encodeURIComponent(input)}`,
-    );
+    const controller = new AbortController();
+    controllerRef.current = controller;
 
     setIsStreaming(true);
 
-    es.onmessage = (event) => {
-      if (event.data === '[DONE]') {
-        setIsStreaming(false);
-        es.close();
-        return;
+    try {
+      // NOTE: Axios in the browser does NOT support real streaming like fetch.
+      const response = await fetch('http://localhost:5001/api/chat/stream', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ message: input }),
+        signal: controller.signal,
+      });
+
+      if (!response.body) throw new Error('No stream returned');
+
+      const reader = response.body!.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+
+        const lines = chunk
+          .split('data:')
+          .map((line) => line.trim())
+          .filter(Boolean);
+
+        for (const line of lines) {
+          if (line === '[DONE]') continue;
+
+          try {
+            const data = JSON.parse(line);
+            const content = data.content ?? '';
+
+            setMessages((prev) =>
+              prev.map((msg) =>
+                msg.id === assistantMessageId
+                  ? { ...msg, content: msg.content + content }
+                  : msg,
+              ),
+            );
+          } catch (err) {
+            console.error('Error parsing chunk:', err, line);
+          }
+        }
       }
-
-      try {
-        const data = JSON.parse(event.data);
-        const chunk: string = data.content ?? data.delta ?? data;
-
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === assistantMessageId
-              ? { ...msg, content: msg.content + chunk }
-              : msg,
-          ),
-        );
-      } catch (err) {
-        console.error('Error parsing SSE message:', err);
-      }
-    };
-
-    es.onerror = (err) => {
-      if (es.readyState === EventSource.CLOSED) {
-        setIsStreaming(false);
-      } else if (es.readyState === EventSource.CONNECTING) {
-        console.log('Server closed connection, preventing auto-reconnect.');
-        es.close();
-        setIsStreaming(false);
+    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((err as any).name === 'AbortError') {
+        console.log('Stream aborted by user');
       } else {
-        console.error('Actual SSE Error:', err);
-        es.close();
-        setIsStreaming(false);
+        console.error('Streaming error:', err);
       }
-    };
-
-    eventSourceRef.current = es;
+    } finally {
+      setIsStreaming(false);
+      controllerRef.current = null;
+    }
   };
 
   const disconnect = () => {
-    eventSourceRef.current?.close();
+    controllerRef.current?.abort();
     setIsStreaming(false);
   };
 
@@ -78,4 +98,29 @@ export const useChatWithAi = () => {
   }, []);
 
   return { messages, isStreaming, connect, disconnect };
+};
+
+export const useChatInitialization = () => {
+  const [conversationId, setConversationId] = useState<string | null>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const initializeConversation = async (accessToken: string) => {
+    if (!accessToken) {
+      setError(new Error('No access or Invalid id'));
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const conversationId = await chatInitialization(accessToken);
+      setConversationId(conversationId);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  return { conversationId, initializeConversation, isLoading, error };
 };

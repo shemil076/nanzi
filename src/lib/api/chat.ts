@@ -1,7 +1,16 @@
-export const chatWithAi = (sessionId: string) => {
-  const es = new EventSource(`/api/?sessionId=${sessionId}`, {
-    withCredentials: true,
-  });
+import axios from 'axios';
 
-  return es;
+export const chatInitialization = (accessToken: string): Promise<string> => {
+  return axios
+    .post('/api/chat/new', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      return res.data as string;
+    })
+    .catch((err) => {
+      throw err;
+    });
 };
