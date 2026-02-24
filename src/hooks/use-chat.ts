@@ -7,7 +7,11 @@ export const useChatWithAi = () => {
   const [isStreaming, setIsStreaming] = useState(false);
   const controllerRef = useRef<AbortController | null>(null);
 
-  const connect = async (input: string, accessToken: string) => {
+  const connect = async (
+    input: string,
+    accessToken: string,
+    conversationId: string,
+  ) => {
     controllerRef.current?.abort();
 
     const userMessage: Message = {
@@ -27,18 +31,21 @@ export const useChatWithAi = () => {
     controllerRef.current = controller;
 
     setIsStreaming(true);
-
+    console.log('conversationId is ', conversationId);
     try {
       // NOTE: Axios in the browser does NOT support real streaming like fetch.
-      const response = await fetch('http://localhost:5001/api/chat/stream', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+      const response = await fetch(
+        `http://localhost:5001/api/chat/stream/${conversationId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ message: input }),
+          signal: controller.signal,
         },
-        body: JSON.stringify({ message: input }),
-        signal: controller.signal,
-      });
+      );
 
       if (!response.body) throw new Error('No stream returned');
 

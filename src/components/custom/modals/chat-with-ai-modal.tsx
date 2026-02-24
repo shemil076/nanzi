@@ -30,9 +30,9 @@ export function ChatWithAIModal() {
   } = useChatInitialization();
 
   const handleSend = (input: string) => {
-    // console.log('conversationId =>, ', conversationId);
-    if (!input.trim()) return;
-    connect(input, accessToken);
+    if (!input.trim() || !conversationId) return;
+    console.log('conversationId =>, ', conversationId);
+    connect(input, accessToken, conversationId);
   };
 
   const onTapAskAi = async () => {
