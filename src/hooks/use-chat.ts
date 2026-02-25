@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { Message } from '../types/message';
+import {
+  ChipsMessagePayload,
+  Message,
+  MessageRole,
+  MessageType,
+  TextMessagePayload,
+} from '../types/message';
 import { chatInitialization } from '../lib/api/chat';
 
 export const useChatWithAi = () => {
@@ -16,15 +22,29 @@ export const useChatWithAi = () => {
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
-      role: 'user',
-      content: input,
+      role: MessageRole.USER,
+      content: null,
+      conversationId: conversationId,
+      type: MessageType.TEXT,
+      metadata: {
+        type: MessageType.TEXT,
+        payload: {
+          content: input,
+        },
+      },
+      createdAt: new Date(),
     };
     const assistantMessageId = crypto.randomUUID();
 
     setMessages((prev) => [
       ...prev,
       userMessage,
-      { id: assistantMessageId, role: 'assistant', content: '' },
+      {
+        id: assistantMessageId,
+        role: MessageRole.ASSISTANT,
+        content: null,
+        conversationId: conversationId,
+      },
     ]);
 
     const controller = new AbortController();
@@ -58,25 +78,114 @@ export const useChatWithAi = () => {
 
         const chunk = decoder.decode(value, { stream: true });
 
+        // chunk => data: {"event": "message", "type": "TEXT", "payload": {"content": "World "}}
+        console.log(typeof chunk); // string
+
         const lines = chunk
           .split('data:')
           .map((line) => line.trim())
           .filter(Boolean);
+        // Array [ '{"event": "message", "type": "TEXT", "payload": {"content": "World "}}' ]
+
+        // console.log('lines => ', lines);
 
         for (const line of lines) {
+          const { event, type, payload } = JSON.parse(line);
+          console.log(`${event} - ${type} ${payload.content}`);
           if (line === '[DONE]') continue;
 
           try {
-            const data = JSON.parse(line);
-            const content = data.content ?? '';
+            // const data = JSON.parse(line);
+            if (type === MessageType.TEXT) {
+              const content = payload.content ?? '';
 
-            setMessages((prev) =>
-              prev.map((msg) =>
-                msg.id === assistantMessageId
-                  ? { ...msg, content: msg.content + content }
-                  : msg,
-              ),
-            );
+              setMessages((prev) =>
+                prev.map((msg) => {
+                  if (msg.id !== assistantMessageId) return msg;
+
+                  let metadata: TextMessagePayload;
+
+                  if (
+                    msg.metadata == undefined ||
+                    !('content' in msg.metadata.payload)
+                  ) {
+                    metadata = {
+                      type: MessageType.TEXT,
+                      payload: {
+                        content: content,
+                      },
+                    };
+                  } else {
+                    metadata = {
+                      type: MessageType.TEXT,
+                      payload: {
+                        content: msg.metadata.payload.content + content,
+                      },
+                    };
+                  }
+
+                  const updatedMessage = {
+                    ...msg,
+                    // content: msg.content + content,
+                    content: null,
+                    type: MessageType.TEXT,
+                    metadata,
+                  };
+
+                  return updatedMessage;
+                }),
+              );
+            }
+
+            if (type === MessageType.CHIP_RESPONSE) {
+              const chips = payload.chips ?? [];
+              const node_id = payload.node_id ?? '';
+
+              setMessages((prev) =>
+                prev.map((msg) => {
+                  if (msg.id !== assistantMessageId) return msg;
+
+                  const metadata: ChipsMessagePayload = {
+                    type: MessageType.CHIP_RESPONSE,
+                    payload: {
+                      chips,
+                      node_id,
+                    },
+                  };
+
+                  // if (
+                  //   msg.metadata == undefined ||
+                  //   !('chips' in msg.metadata.payload) ||
+                  //   !('node_id' in msg.metadata.payload)
+                  // ) {
+                  //   metadata = {
+                  //     type: MessageType.CHIP_RESPONSE,
+                  //     payload: {
+                  //       chips,
+                  //       node_id,
+                  //     },
+                  //   };
+                  // } else {
+                  //   metadata = {
+                  //     type: MessageType.CHIP_RESPONSE,
+                  //     payload: {
+                  //       chips,
+                  //       node_id,
+                  //     },
+                  //   };
+                  // }
+
+                  const updatedMessage = {
+                    ...msg,
+                    content: null,
+                    type: MessageType.TEXT,
+                    metadata,
+                  };
+
+                  return updatedMessage;
+                }),
+              );
+            }
           } catch (err) {
             console.error('Error parsing chunk:', err, line);
           }
