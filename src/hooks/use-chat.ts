@@ -90,8 +90,8 @@ export const useChatWithAi = () => {
         // console.log('lines => ', lines);
 
         for (const line of lines) {
-          const { event, type, payload } = JSON.parse(line);
-          console.log(`${event} - ${type} ${payload.content}`);
+          const { type, payload } = JSON.parse(line);
+          // console.log(`${event} - ${type} ${payload.content}`);
           if (line === '[DONE]') continue;
 
           try {
@@ -141,50 +141,74 @@ export const useChatWithAi = () => {
               const chips = payload.chips ?? [];
               const node_id = payload.node_id ?? '';
 
-              setMessages((prev) =>
-                prev.map((msg) => {
-                  if (msg.id !== assistantMessageId) return msg;
+              setMessages((prev) => {
+                const metadata: ChipsMessagePayload = {
+                  type: MessageType.CHIP_RESPONSE,
+                  payload: {
+                    chips,
+                    node_id,
+                  },
+                };
+                const assistantMessageId = crypto.randomUUID();
 
-                  const metadata: ChipsMessagePayload = {
-                    type: MessageType.CHIP_RESPONSE,
-                    payload: {
-                      chips,
-                      node_id,
-                    },
-                  };
-
-                  // if (
-                  //   msg.metadata == undefined ||
-                  //   !('chips' in msg.metadata.payload) ||
-                  //   !('node_id' in msg.metadata.payload)
-                  // ) {
-                  //   metadata = {
-                  //     type: MessageType.CHIP_RESPONSE,
-                  //     payload: {
-                  //       chips,
-                  //       node_id,
-                  //     },
-                  //   };
-                  // } else {
-                  //   metadata = {
-                  //     type: MessageType.CHIP_RESPONSE,
-                  //     payload: {
-                  //       chips,
-                  //       node_id,
-                  //     },
-                  //   };
-                  // }
-
-                  const updatedMessage = {
-                    ...msg,
+                return [
+                  ...prev,
+                  {
+                    id: assistantMessageId,
+                    role: MessageRole.ASSISTANT,
                     content: null,
-                    type: MessageType.TEXT,
+                    conversationId: conversationId,
+                    type: MessageType.CHIP_RESPONSE,
                     metadata,
-                  };
+                  },
+                ];
+              });
 
-                  return updatedMessage;
-                }),
-              );
+              // setMessages((prev) =>
+              //   prev.map((msg) => {
+              //     if (msg.id !== assistantMessageId) return msg;
+
+              // const metadata: ChipsMessagePayload = {
+              //   type: MessageType.CHIP_RESPONSE,
+              //   payload: {
+              //     chips,
+              //     node_id,
+              //   },
+              // };
+
+              //     // if (
+              //     //   msg.metadata == undefined ||
+              //     //   !('chips' in msg.metadata.payload) ||
+              //     //   !('node_id' in msg.metadata.payload)
+              //     // ) {
+              //     //   metadata = {
+              //     //     type: MessageType.CHIP_RESPONSE,
+              //     //     payload: {
+              //     //       chips,
+              //     //       node_id,
+              //     //     },
+              //     //   };
+              //     // } else {
+              //     //   metadata = {
+              //     //     type: MessageType.CHIP_RESPONSE,
+              //     //     payload: {
+              //     //       chips,
+              //     //       node_id,
+              //     //     },
+              //     //   };
+              //     // }
+
+              //     const updatedMessage = {
+              //       ...msg,
+              //       content: null,
+              //       type: MessageType.TEXT,
+              //       metadata,
+              //     };
+              //     console.log('updatedMessage-chip', updatedMessage);
+
+              //     return updatedMessage;
+              //   }),
+              // );
             }
           } catch (err) {
             console.error('Error parsing chunk:', err, line);

@@ -2,6 +2,7 @@ import ReactMarkdown from 'react-markdown';
 import { Message, MessageRole, MessageType } from '../../types/message';
 import remarkGfm from 'remark-gfm';
 import { Spinner } from '../ui/spinner';
+import { Button } from '../ui/button';
 
 export default function MessageBubble({ message }: { message: Message }) {
   const isUser = message.role === MessageRole.USER;
@@ -10,6 +11,7 @@ export default function MessageBubble({ message }: { message: Message }) {
     return <Spinner />;
   }
 
+  console.log(message.id);
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
       <div
@@ -22,6 +24,18 @@ export default function MessageBubble({ message }: { message: Message }) {
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {message.metadata.payload.content}
             </ReactMarkdown>
+          )}
+
+        {message.type == MessageType.CHIP_RESPONSE &&
+          'chips' in message.metadata.payload && (
+            <div className="flex flex-row gap-5">
+              {message.metadata.payload.chips.map((item, index) => (
+                <Button key={index}>{item}</Button>
+              ))}
+            </div>
+            // <ReactMarkdown remarkPlugins={[remarkGfm]}>
+
+            // </ReactMarkdown>
           )}
       </div>
     </div>
