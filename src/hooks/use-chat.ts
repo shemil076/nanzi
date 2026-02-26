@@ -17,6 +17,7 @@ export const useChatWithAi = () => {
     input: string,
     accessToken: string,
     conversationId: string,
+    nodeId?: string,
   ) => {
     controllerRef.current?.abort();
 
@@ -62,7 +63,7 @@ export const useChatWithAi = () => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ message: input }),
+          body: JSON.stringify({ message: input, node_id: nodeId }),
           signal: controller.signal,
         },
       );
@@ -79,7 +80,7 @@ export const useChatWithAi = () => {
         const chunk = decoder.decode(value, { stream: true });
 
         // chunk => data: {"event": "message", "type": "TEXT", "payload": {"content": "World "}}
-        console.log(typeof chunk); // string
+        console.log(chunk); // string
 
         const lines = chunk
           .split('data:')
@@ -163,52 +164,6 @@ export const useChatWithAi = () => {
                   },
                 ];
               });
-
-              // setMessages((prev) =>
-              //   prev.map((msg) => {
-              //     if (msg.id !== assistantMessageId) return msg;
-
-              // const metadata: ChipsMessagePayload = {
-              //   type: MessageType.CHIP_RESPONSE,
-              //   payload: {
-              //     chips,
-              //     node_id,
-              //   },
-              // };
-
-              //     // if (
-              //     //   msg.metadata == undefined ||
-              //     //   !('chips' in msg.metadata.payload) ||
-              //     //   !('node_id' in msg.metadata.payload)
-              //     // ) {
-              //     //   metadata = {
-              //     //     type: MessageType.CHIP_RESPONSE,
-              //     //     payload: {
-              //     //       chips,
-              //     //       node_id,
-              //     //     },
-              //     //   };
-              //     // } else {
-              //     //   metadata = {
-              //     //     type: MessageType.CHIP_RESPONSE,
-              //     //     payload: {
-              //     //       chips,
-              //     //       node_id,
-              //     //     },
-              //     //   };
-              //     // }
-
-              //     const updatedMessage = {
-              //       ...msg,
-              //       content: null,
-              //       type: MessageType.TEXT,
-              //       metadata,
-              //     };
-              //     console.log('updatedMessage-chip', updatedMessage);
-
-              //     return updatedMessage;
-              //   }),
-              // );
             }
           } catch (err) {
             console.error('Error parsing chunk:', err, line);

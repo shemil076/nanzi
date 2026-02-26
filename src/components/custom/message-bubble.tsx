@@ -1,11 +1,25 @@
+'use client';
 import ReactMarkdown from 'react-markdown';
 import { Message, MessageRole, MessageType } from '../../types/message';
 import remarkGfm from 'remark-gfm';
 import { Spinner } from '../ui/spinner';
 import { Button } from '../ui/button';
+import { useAuth } from '../../hooks/useAuth';
 
-export default function MessageBubble({ message }: { message: Message }) {
+export default function MessageBubble({
+  message,
+  connect,
+}: {
+  message: Message;
+  connect: (
+    input: string,
+    accessToken: string,
+    conversationId: string,
+    nodeId?: string,
+  ) => Promise<void>;
+}) {
   const isUser = message.role === MessageRole.USER;
+  const { accessToken } = useAuth();
 
   if (message.metadata == undefined) {
     return <Spinner />;
@@ -27,15 +41,25 @@ export default function MessageBubble({ message }: { message: Message }) {
           )}
 
         {message.type == MessageType.CHIP_RESPONSE &&
-          'chips' in message.metadata.payload && (
+          'chips' in message.metadata.payload &&
+          'node_id' in message.metadata.payload && (
             <div className="flex flex-row gap-5">
-              {message.metadata.payload.chips.map((item, index) => (
-                <Button key={index}>{item}</Button>
+              {message.metadata.payload.chips.map((chip, index) => (
+                <Button
+                  key={index}
+                  onClick={() => {
+                    connect(
+                      chip,
+                      accessToken,
+                      message.conversationId,
+                      message.metadata.payload.node_id,
+                    );
+                  }}
+                >
+                  {chip}
+                </Button>
               ))}
             </div>
-            // <ReactMarkdown remarkPlugins={[remarkGfm]}>
-
-            // </ReactMarkdown>
           )}
       </div>
     </div>

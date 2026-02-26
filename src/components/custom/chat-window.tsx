@@ -9,10 +9,17 @@ export default function ChatWindow({
   messages,
   isStreaming,
   isLoadingInitialization,
+  connect,
 }: {
   messages: Message[];
   isStreaming: boolean;
   isLoadingInitialization: boolean;
+  connect: (
+    input: string,
+    accessToken: string,
+    conversationId: string,
+    nodeId?: string,
+  ) => Promise<void>;
 }) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -39,7 +46,7 @@ export default function ChatWindow({
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-3">
       {messages.map((msg, index) => (
-        <MessageBubble key={index} message={msg} />
+        <MessageBubble key={index} message={msg} connect={connect} />
       ))}
 
       {isStreaming && (
