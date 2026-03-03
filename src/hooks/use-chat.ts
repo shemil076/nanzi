@@ -200,7 +200,10 @@ export const useChatInitialization = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const initializeConversation = async (accessToken: string) => {
+  const initializeConversation = async (
+    accessToken: string,
+    propertyId: string,
+  ) => {
     if (!accessToken) {
       setError(new Error('No access or Invalid id'));
       setIsLoading(false);
@@ -209,7 +212,7 @@ export const useChatInitialization = () => {
 
     try {
       setIsLoading(true);
-      const conversationId = await chatInitialization(accessToken);
+      const conversationId = await chatInitialization(accessToken, propertyId);
       setConversationId(conversationId);
     } catch (err) {
       setError(err as Error);

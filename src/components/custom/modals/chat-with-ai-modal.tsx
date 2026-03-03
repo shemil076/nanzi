@@ -17,7 +17,11 @@ import { useChatInitialization, useChatWithAi } from '../../../hooks/use-chat';
 import { useAuth } from '../../../hooks/useAuth';
 import { useState } from 'react';
 
-export function ChatWithAIModal() {
+interface ChatWithAIModalProps {
+  propertyId: string;
+}
+
+export function ChatWithAIModal({ propertyId }: ChatWithAIModalProps) {
   const { messages, isStreaming, connect, disconnect } = useChatWithAi();
   const { accessToken } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
@@ -37,7 +41,7 @@ export function ChatWithAIModal() {
 
   const onTapAskAi = async () => {
     if (accessToken) {
-      await initializeConversation(accessToken);
+      await initializeConversation(accessToken, propertyId);
     }
 
     console.log('conversationId =>, ', conversationId);

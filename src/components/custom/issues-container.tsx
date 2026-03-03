@@ -44,7 +44,7 @@ const IssuesContent = ({ propertyId, isTenant }: IssuesContentProps) => {
 
         {isTenant && (
           <div className="flex flex-row gap-2">
-            <ChatWithAIModal />
+            <ChatWithAIModal propertyId={propertyId} />
             <AddIssueForm propertyId={propertyId} loadIssues={loadIssues} />
           </div>
         )}
