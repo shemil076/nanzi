@@ -79,20 +79,15 @@ export const useChatWithAi = () => {
 
         const chunk = decoder.decode(value, { stream: true });
 
-        // chunk => data: {"event": "message", "type": "TEXT", "payload": {"content": "World "}}
-        console.log(chunk); // string
+        console.log(chunk);
 
         const lines = chunk
           .split('data:')
           .map((line) => line.trim())
           .filter(Boolean);
-        // Array [ '{"event": "message", "type": "TEXT", "payload": {"content": "World "}}' ]
-
-        // console.log('lines => ', lines);
 
         for (const line of lines) {
           const { type, payload } = JSON.parse(line);
-          // console.log(`${event} - ${type} ${payload.content}`);
           if (line === '[DONE]') continue;
 
           try {
