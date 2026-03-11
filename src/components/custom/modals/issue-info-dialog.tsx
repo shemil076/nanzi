@@ -102,7 +102,7 @@ export function IssueInfoDialog({ issue }: { issue: Issue }) {
           )}
         </div>
         <DialogFooter>
-          <div className="text-xs">Powered by AI</div>
+          <div className="text-xs">Powered by nanzi AI</div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
