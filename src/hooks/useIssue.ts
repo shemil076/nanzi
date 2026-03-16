@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import {
   createIssue,
+  deleteTicketById,
   fetchIssuesByProperty,
   updateIssueStatusById,
 } from '../lib/api/issue';
@@ -99,4 +100,31 @@ export const useUpdateIssueStatus = () => {
   };
 
   return { updateIssueStatus, issue, isLoading };
+};
+
+export const useDeleteMaintenanceTicket = () => {
+  const [deletedMaintenanceTicket, setDeletedMaintenanceTicket] =
+    useState<Issue | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const deleteTicket = async (propertyId: string, accessToken: string) => {
+    if (!propertyId) {
+      setError(new Error('Invalid data'));
+      setIsLoading(false);
+      return { success: false, error };
+    }
+    try {
+      setIsLoading(true);
+      const data = await deleteTicketById(accessToken, propertyId);
+      setDeletedMaintenanceTicket(data);
+      return { success: true };
+    } catch (err) {
+      setError(err as Error);
+      return { success: false, error };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  return { deleteTicket, deletedMaintenanceTicket, isLoading, error };
 };
