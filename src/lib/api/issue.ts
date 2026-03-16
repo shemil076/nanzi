@@ -57,3 +57,21 @@ export const updateIssueStatusById = async (
       throw err;
     });
 };
+
+export const deleteTicketById = async (
+  accessToken: string,
+  ticketId: string,
+): Promise<Issue> => {
+  return axios
+    .delete(`/api/property/delete/${ticketId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      return reformatIssue(res.data);
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
