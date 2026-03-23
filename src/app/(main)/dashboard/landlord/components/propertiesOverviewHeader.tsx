@@ -21,12 +21,12 @@ const PropertyOverViewHeader = () => {
               field: 'Active Properties',
               icon: Building,
               value: `${propertiesOverview.availablePropertyCount + propertiesOverview.rentedPropertyCount}`,
-              subtitle: `${propertiesOverview.tenantCount} occupied, ${propertiesOverview.availablePropertyCount} vacant`,
+              subtitle: `${propertiesOverview.rentedPropertyCount} occupied, ${propertiesOverview.availablePropertyCount} vacant`,
             },
             {
               field: 'Active Tenants',
               icon: UsersRound,
-              value: `${propertiesOverview.tenantCount}`,
+              value: `${propertiesOverview.rentedPropertyCount}`,
               subtitle: ``,
             },
             {
