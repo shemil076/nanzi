@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useAuth } from '../hooks/useAuth';
 import { RootState } from '../redux/store';
+import { jwtDecode } from 'jwt-decode';
 
 axios.defaults.baseURL = 'http://localhost:5001';
 axios.defaults.withCredentials = true;
@@ -17,6 +18,34 @@ export const AuthInterceptorProvider = ({
   const { refreshToken: refreshTokenAction } = useAuth();
   const accessToken = useSelector((state: RootState) => state.auth.accessToken);
   const refreshPromise = useRef<Promise<string | null> | null>(null);
+
+  useEffect(() => {
+    if (!accessToken) return;
+
+    let timeout: NodeJS.Timeout;
+
+    try {
+      const decoded = jwtDecode(accessToken);
+      const exp = decoded.exp * 1000;
+      const now = Date.now();
+
+      const refreshTime = exp - now - 60 * 1000;
+
+      if (refreshTime > 0) {
+        timeout = setTimeout(() => {
+          console.log('Refreshing token before expiry...');
+          refreshTokenAction().catch(() => {});
+        }, refreshTime);
+      } else {
+        refreshTokenAction().catch(() => {});
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      console.log('Invalid token');
+    }
+
+    return () => clearTimeout(timeout);
+  }, [accessToken, refreshTokenAction]);
 
   useEffect(() => {
     const requestInterceptor = axios.interceptors.request.use(
